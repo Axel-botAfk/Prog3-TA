@@ -18,32 +18,7 @@
   <xs:element name="obtenerTotalResenasResponse" type="tns:obtenerTotalResenasResponse" />
   <xs:complexType name="eliminarResena">
     <xs:sequence>
-      <xs:element name="idResena" type="xs:int" />
-      <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="eliminarResenaResponse">
-    <xs:sequence />
-  </xs:complexType>
-  <xs:complexType name="IOException">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="message" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="InterruptedException">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="message" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="listarResenasPorProducto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
-      <xs:element name="idProducto" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="listarResenasPorProductoResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:reseña" />
+      <xs:element minOccurs="0" name="Reseña" type="tns:reseña" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="reseña">
@@ -85,6 +60,30 @@
       <xs:element minOccurs="0" name="usosRestantes" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="eliminarResenaResponse">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="IOException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="message" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InterruptedException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="message" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="listarResenasPorProducto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
+      <xs:element name="idProducto" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="listarResenasPorProductoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:reseña" />
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="obtenerTotalResenas">
     <xs:sequence>
       <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
@@ -98,8 +97,7 @@
   </xs:complexType>
   <xs:complexType name="obtenerResena">
     <xs:sequence>
-      <xs:element name="idResena" type="xs:int" />
-      <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
+      <xs:element minOccurs="0" name="Reseña" type="tns:reseña" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="obtenerResenaResponse">
@@ -109,7 +107,7 @@
   </xs:complexType>
   <xs:complexType name="listarResenas">
     <xs:sequence>
-      <xs:element minOccurs="0" name="tipoProducto" type="tns:tipoProducto" />
+      <xs:element minOccurs="0" name="Reseña" type="tns:reseña" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="listarResenasResponse">

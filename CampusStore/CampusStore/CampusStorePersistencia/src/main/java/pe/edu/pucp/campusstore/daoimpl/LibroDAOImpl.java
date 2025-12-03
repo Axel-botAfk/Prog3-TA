@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pe.edu.pucp.campusstore.bases.dao.TransaccionalBaseDAO;
 import pe.edu.pucp.campusstore.dao.LibroDAO;
 import pe.edu.pucp.campusstore.modelo.Autor;
@@ -216,6 +218,67 @@ public class LibroDAOImpl extends TransaccionalBaseDAO<Libro> implements LibroDA
                 return lista;
             }
         });
+    }
+    
+    @Override
+    public boolean actualizar(Libro modelo) {
+        return ejecutarComando(conn -> {
+            boolean resultado = ejecutarComandoActualizar(conn, modelo);
+            if (resultado) {
+                actualizarAutores(conn, modelo);
+            }
+            return resultado;
+        });
+    }
+    
+    private void actualizarAutores(Connection conn, Libro modelo) throws SQLException {
+        if (modelo.getAutores() == null || modelo.getAutores().isEmpty()) {
+            return;
+        }
+
+        // Eliminar relaciones existentes
+        try (CallableStatement cmdEliminar = conn.prepareCall("{call eliminarAutoresLibro(?)}")) {
+            cmdEliminar.setInt(1, modelo.getIdLibro());
+            cmdEliminar.executeUpdate();
+        }
+
+        // Insertar nuevas relaciones
+        try (CallableStatement cmdInsertar = conn.prepareCall("{call actualizarAutoresLibro(?, ?)}")) {
+            for (Autor autor : modelo.getAutores()) {
+                cmdInsertar.setInt(1, modelo.getIdLibro());
+                cmdInsertar.setInt(2, autor.getIdAutor());
+                cmdInsertar.executeUpdate();
+            }
+        }
+    }
+    
+    @Override
+    public boolean eliminarAutoresPorLibro(Integer idLibro, Connection conn) {
+        String sql = "{call eliminarAutoresLibro(?)}";
+        
+        try (CallableStatement cmd = conn.prepareCall(sql)) {
+            cmd.setInt(1, idLibro);
+            cmd.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(LibroDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean crearRelacionLibroAutor(Integer idLibro, Integer idAutor, Connection conn) {
+        String sql = "{call actualizarAutoresLibro(?, ?)}";
+        
+        try (CallableStatement cmd = conn.prepareCall(sql)) {
+            cmd.setInt(1, idLibro);
+            cmd.setInt(2, idAutor);
+            cmd.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(LibroDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
     
 }

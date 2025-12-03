@@ -5,24 +5,6 @@
       <xsd:import schemaLocation="http://localhost:8080/CampusStoreWS/EmpleadoWS?xsd=1" namespace="http://services.campusstore.pucp.edu.pe/" />
     </xsd:schema>
   </types>
-  <message name="listarEmpleados">
-    <part name="parameters" element="tns:listarEmpleados" />
-  </message>
-  <message name="listarEmpleadosResponse">
-    <part name="parameters" element="tns:listarEmpleadosResponse" />
-  </message>
-  <message name="IOException">
-    <part name="fault" element="tns:IOException" />
-  </message>
-  <message name="InterruptedException">
-    <part name="fault" element="tns:InterruptedException" />
-  </message>
-  <message name="guardarEmpleado">
-    <part name="parameters" element="tns:guardarEmpleado" />
-  </message>
-  <message name="guardarEmpleadoResponse">
-    <part name="parameters" element="tns:guardarEmpleadoResponse" />
-  </message>
   <message name="obtenerEmpleado">
     <part name="parameters" element="tns:obtenerEmpleado" />
   </message>
@@ -35,64 +17,38 @@
   <message name="eliminarEmpleadoResponse">
     <part name="parameters" element="tns:eliminarEmpleadoResponse" />
   </message>
+  <message name="guardarEmpleado">
+    <part name="parameters" element="tns:guardarEmpleado" />
+  </message>
+  <message name="guardarEmpleadoResponse">
+    <part name="parameters" element="tns:guardarEmpleadoResponse" />
+  </message>
+  <message name="listarEmpleados">
+    <part name="parameters" element="tns:listarEmpleados" />
+  </message>
+  <message name="listarEmpleadosResponse">
+    <part name="parameters" element="tns:listarEmpleadosResponse" />
+  </message>
   <portType name="EmpleadoWS">
-    <operation name="listarEmpleados">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleadosRequest" message="tns:listarEmpleados" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleadosResponse" message="tns:listarEmpleadosResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleados/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleados/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="guardarEmpleado">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleadoRequest" message="tns:guardarEmpleado" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleadoResponse" message="tns:guardarEmpleadoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleado/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleado/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
     <operation name="obtenerEmpleado">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/obtenerEmpleadoRequest" message="tns:obtenerEmpleado" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/obtenerEmpleadoResponse" message="tns:obtenerEmpleadoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/obtenerEmpleado/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/obtenerEmpleado/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="eliminarEmpleado">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/eliminarEmpleadoRequest" message="tns:eliminarEmpleado" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/eliminarEmpleadoResponse" message="tns:eliminarEmpleadoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/eliminarEmpleado/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/eliminarEmpleado/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
+    <operation name="guardarEmpleado">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleadoRequest" message="tns:guardarEmpleado" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/guardarEmpleadoResponse" message="tns:guardarEmpleadoResponse" />
+    </operation>
+    <operation name="listarEmpleados">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleadosRequest" message="tns:listarEmpleados" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/EmpleadoWS/listarEmpleadosResponse" message="tns:listarEmpleadosResponse" />
     </operation>
   </portType>
   <binding name="EmpleadoWSPortBinding" type="tns:EmpleadoWS">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <operation name="listarEmpleados">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="guardarEmpleado">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
     <operation name="obtenerEmpleado">
       <soap:operation soapAction="" />
       <input>
@@ -101,12 +57,6 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
     </operation>
     <operation name="eliminarEmpleado">
       <soap:operation soapAction="" />
@@ -116,12 +66,24 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
+    </operation>
+    <operation name="guardarEmpleado">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="listarEmpleados">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
     </operation>
   </binding>
   <service name="EmpleadoWS">

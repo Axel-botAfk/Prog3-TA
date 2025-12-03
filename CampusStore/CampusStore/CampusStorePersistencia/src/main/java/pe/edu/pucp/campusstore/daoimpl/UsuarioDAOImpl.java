@@ -10,9 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pe.edu.pucp.campusstore.bases.dao.BaseDAO;
 import pe.edu.pucp.campusstore.dao.UsuarioDAO;
 import pe.edu.pucp.campusstore.modelo.Usuario;
+import utils.Crypto;
 
 /**
  *
@@ -56,7 +59,11 @@ public class UsuarioDAOImpl extends BaseDAO<Usuario> implements UsuarioDAO{
         
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_correo", correo);
-        cmd.setString("p_contraseña", contraseña);
+        try {
+            cmd.setString("p_contraseña", Crypto.encrypt(contraseña));
+        } catch (Exception ex) {
+            Logger.getLogger(UsuarioDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         cmd.registerOutParameter("p_tipoUsuario", Types.VARCHAR);
         
         return cmd;

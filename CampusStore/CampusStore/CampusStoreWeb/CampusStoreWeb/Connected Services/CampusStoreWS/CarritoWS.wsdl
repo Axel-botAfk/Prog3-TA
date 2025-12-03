@@ -5,6 +5,12 @@
       <xsd:import schemaLocation="http://localhost:8080/CampusStoreWS/CarritoWS?xsd=1" namespace="http://services.campusstore.pucp.edu.pe/" />
     </xsd:schema>
   </types>
+  <message name="obtenerCarritoPorCliente">
+    <part name="parameters" element="tns:obtenerCarritoPorCliente" />
+  </message>
+  <message name="obtenerCarritoPorClienteResponse">
+    <part name="parameters" element="tns:obtenerCarritoPorClienteResponse" />
+  </message>
   <message name="eliminarLineaDelCarrito">
     <part name="parameters" element="tns:eliminarLineaDelCarrito" />
   </message>
@@ -17,23 +23,23 @@
   <message name="aplicarCuponACarritoResponse">
     <part name="parameters" element="tns:aplicarCuponACarritoResponse" />
   </message>
-  <message name="obtenerCarritoPorCliente">
-    <part name="parameters" element="tns:obtenerCarritoPorCliente" />
+  <message name="eliminarCarrito">
+    <part name="parameters" element="tns:eliminarCarrito" />
   </message>
-  <message name="obtenerCarritoPorClienteResponse">
-    <part name="parameters" element="tns:obtenerCarritoPorClienteResponse" />
-  </message>
-  <message name="guardarCarrito">
-    <part name="parameters" element="tns:guardarCarrito" />
-  </message>
-  <message name="guardarCarritoResponse">
-    <part name="parameters" element="tns:guardarCarritoResponse" />
+  <message name="eliminarCarritoResponse">
+    <part name="parameters" element="tns:eliminarCarritoResponse" />
   </message>
   <message name="IOException">
     <part name="fault" element="tns:IOException" />
   </message>
   <message name="InterruptedException">
     <part name="fault" element="tns:InterruptedException" />
+  </message>
+  <message name="guardarCarrito">
+    <part name="parameters" element="tns:guardarCarrito" />
+  </message>
+  <message name="guardarCarritoResponse">
+    <part name="parameters" element="tns:guardarCarritoResponse" />
   </message>
   <message name="listarCarritos">
     <part name="parameters" element="tns:listarCarritos" />
@@ -47,13 +53,11 @@
   <message name="obtenerCarritoResponse">
     <part name="parameters" element="tns:obtenerCarritoResponse" />
   </message>
-  <message name="eliminarCarrito">
-    <part name="parameters" element="tns:eliminarCarrito" />
-  </message>
-  <message name="eliminarCarritoResponse">
-    <part name="parameters" element="tns:eliminarCarritoResponse" />
-  </message>
   <portType name="CarritoWS">
+    <operation name="obtenerCarritoPorCliente">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarritoPorClienteRequest" message="tns:obtenerCarritoPorCliente" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarritoPorClienteResponse" message="tns:obtenerCarritoPorClienteResponse" />
+    </operation>
     <operation name="eliminarLineaDelCarrito">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarLineaDelCarritoRequest" message="tns:eliminarLineaDelCarrito" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarLineaDelCarritoResponse" message="tns:eliminarLineaDelCarritoResponse" />
@@ -62,9 +66,11 @@
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/aplicarCuponACarritoRequest" message="tns:aplicarCuponACarrito" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/aplicarCuponACarritoResponse" message="tns:aplicarCuponACarritoResponse" />
     </operation>
-    <operation name="obtenerCarritoPorCliente">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarritoPorClienteRequest" message="tns:obtenerCarritoPorCliente" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarritoPorClienteResponse" message="tns:obtenerCarritoPorClienteResponse" />
+    <operation name="eliminarCarrito">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarritoRequest" message="tns:eliminarCarrito" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarritoResponse" message="tns:eliminarCarritoResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarrito/Fault/IOException" name="IOException" message="tns:IOException" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarrito/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="guardarCarrito">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/guardarCarritoRequest" message="tns:guardarCarrito" />
@@ -84,15 +90,18 @@
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarrito/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/obtenerCarrito/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
-    <operation name="eliminarCarrito">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarritoRequest" message="tns:eliminarCarrito" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarritoResponse" message="tns:eliminarCarritoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarrito/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CarritoWS/eliminarCarrito/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
   </portType>
   <binding name="CarritoWSPortBinding" type="tns:CarritoWS">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="obtenerCarritoPorCliente">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
     <operation name="eliminarLineaDelCarrito">
       <soap:operation soapAction="" />
       <input>
@@ -111,7 +120,7 @@
         <soap:body use="literal" />
       </output>
     </operation>
-    <operation name="obtenerCarritoPorCliente">
+    <operation name="eliminarCarrito">
       <soap:operation soapAction="" />
       <input>
         <soap:body use="literal" />
@@ -119,6 +128,12 @@
       <output>
         <soap:body use="literal" />
       </output>
+      <fault name="IOException">
+        <soap:fault use="literal" name="IOException" namespace="" />
+      </fault>
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
+      </fault>
     </operation>
     <operation name="guardarCarrito">
       <soap:operation soapAction="" />
@@ -151,21 +166,6 @@
       </fault>
     </operation>
     <operation name="obtenerCarrito">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="eliminarCarrito">
       <soap:operation soapAction="" />
       <input>
         <soap:body use="literal" />

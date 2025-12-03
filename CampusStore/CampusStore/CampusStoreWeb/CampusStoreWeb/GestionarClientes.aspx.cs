@@ -114,9 +114,60 @@ namespace CampusStoreWeb
 
         protected void gvClientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            clientes = new BindingList<cliente>(clienteWS.listarClientes());
+            // 1. Asignar el nuevo índice de página
             gvClientes.PageIndex = e.NewPageIndex;
-            gvClientes.DataBind();
+
+            // 2. Verificar si hay texto en el buscador
+            string textoBuscar = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(textoBuscar))
+            {
+                // CASO A: Sin búsqueda, cargar todo
+                CargarClientes();
+            }
+            else
+            {
+                // CASO B: Con búsqueda, aplicar el filtro nuevamente
+
+                // Recuperar lista original del ViewState para no ir a la BD si no es necesario
+                clientes = ViewState["ClientesOriginales"] as BindingList<cliente>;
+
+                if (clientes == null)
+                {
+                    clientes = new BindingList<cliente>(clienteWS.listarClientes());
+                    ViewState["ClientesOriginales"] = clientes;
+                }
+
+                System.Collections.Generic.List<cliente> clientesFiltrados;
+
+                // Aplicar la misma lógica que en el botón Buscar
+                if (int.TryParse(textoBuscar, out int idCliente))
+                {
+                    // Búsqueda por ID
+                    clientesFiltrados = clientes.Where(x => x.idCliente == idCliente).ToList();
+
+                    // Si no encuentra por ID, intentar por nombre/usuario
+                    if (clientesFiltrados.Count == 0)
+                    {
+                        clientesFiltrados = clientes.Where(x =>
+                            (x.nombre != null && x.nombre.ToLower().Contains(textoBuscar.ToLower())) ||
+                            (x.nombreUsuario != null && x.nombreUsuario.ToLower().Contains(textoBuscar.ToLower()))
+                        ).ToList();
+                    }
+                }
+                else
+                {
+                    // Búsqueda por texto (nombre o usuario)
+                    clientesFiltrados = clientes.Where(x =>
+                        (x.nombre != null && x.nombre.ToLower().Contains(textoBuscar.ToLower())) ||
+                        (x.nombreUsuario != null && x.nombreUsuario.ToLower().Contains(textoBuscar.ToLower()))
+                    ).ToList();
+                }
+
+                // 3. IMPORTANTE: Asignar el DataSource y enlazar
+                gvClientes.DataSource = clientesFiltrados;
+                gvClientes.DataBind();
+            }
         }
 
         protected void lbModificar_Click(object sender, EventArgs e)

@@ -1,6 +1,5 @@
 package pe.edu.pucp.campusstore.daoimpl;
 
-import pe.edu.pucp.campusstore.bases.dao.BaseDAO;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

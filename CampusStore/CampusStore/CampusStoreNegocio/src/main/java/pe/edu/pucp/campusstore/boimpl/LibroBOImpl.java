@@ -107,6 +107,67 @@ public class LibroBOImpl implements LibroBO {
         return this.libroDAO.leerAutoresPorLibro(idLibro);
     }
     
-    
+    @Override
+    public void modificarConAutores(Libro libro, List<Autor> autores) {
+        DBManager dbManager = DBFactoryProvider.getManager();
+        try (Connection conn = dbManager.getConnection()) {
+            conn.setAutoCommit(false); 
+            try {
+                if (libro.getEditorial() != null) {
+                } else {
+                    throw new RuntimeException("El objeto editorial no puede ser nulo.");
+                }
+                
+                if (libro.getEditorial() != null && (libro.getEditorial().getIdEditorial() == 0 || libro.getEditorial().getIdEditorial() == null)) {
+                    Integer idEditorial = this.editorialDAO.crear(libro.getEditorial(), conn);
+                    if (idEditorial == null) {
+                        throw new RuntimeException("No se pudo crear la editorial");
+                    }
+                    libro.getEditorial().setIdEditorial(idEditorial);
+                }
+
+                boolean libroActualizado = libroDAO.actualizar(libro, conn);
+                if (!libroActualizado) {
+                    throw new RuntimeException("No se pudo actualizar el libro");
+                }
+
+                libroDAO.eliminarAutoresPorLibro(libro.getIdLibro(), conn);
+
+                if (autores != null && !autores.isEmpty()) {
+                    for (Autor autor : autores) {
+                        if (autor.getIdAutor() == 0) {
+                            Integer idAutor = autorDAO.crear(autor, conn);
+                            if (idAutor == null) {
+                                throw new RuntimeException("No se pudo crear el autor: " + autor.getNombre());
+                            }
+                            autor.setIdAutor(idAutor);
+                        }
+
+                        boolean relacionCreada = libroDAO.crearRelacionLibroAutor(
+                            libro.getIdLibro(), 
+                            autor.getIdAutor(), 
+                            conn
+                        );
+
+                        if (!relacionCreada) {
+                            throw new RuntimeException("No se pudo crear la relación para el autor: " + autor.getNombre());
+                        }
+                    }
+                }
+
+                conn.commit();
+
+            } catch (Exception ex) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackEx) {
+                    throw new RuntimeException("Error al hacer rollback", rollbackEx);
+                }
+                throw new RuntimeException("Error modificando libro con autores: " + ex.getMessage(), ex);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException("Error de conexión al modificar Libro", e);
+        }
+    }
 
 }

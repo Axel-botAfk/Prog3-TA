@@ -536,8 +536,10 @@
             background-color: #F9FAFB;
             border: 2px solid #E4E7E9;
             border-radius: 8px;
-            padding: 24px;
+            padding: 32px;
             margin-top: 30px;
+            overflow: visible;
+            box-sizing: border-box;
         }
 
         .resenas-header {
@@ -545,14 +547,22 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            padding-bottom: 20px;
+            padding: 16px 0 20px 0;
             border-bottom: 2px solid #E4E7E9;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .resenas-title-group {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
+            min-width: 200px;
+            padding-right: 16px;
+            box-sizing: border-box;
         }
 
         .resenas-title-group h3 {
@@ -563,6 +573,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .resenas-title-group h3 i {
@@ -580,26 +591,36 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            flex-shrink: 0;
+            padding-left: 16px;
+            box-sizing: border-box;
         }
 
         .rating-promedio {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            min-width: fit-content;
+            padding: 8px;
+            box-sizing: border-box;
         }
 
         .rating-numero {
-            font-size: 36px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--primary-orange);
             line-height: 1;
+            white-space: nowrap;
         }
 
         .rating-estrellas-grande {
             display: flex;
-            gap: 4px;
-            font-size: 20px;
+            gap: 3px;
+            font-size: 16px;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Lista de reseñas */
@@ -763,6 +784,83 @@
             color: #929FA5;
             font-size: 14px;
         }
+
+        /* Panel Modal */
+        .modal-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-panel.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 2px solid #E4E7E9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #191C1F;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary-orange);
+        }
+
+        .btn-close-modal {
+            background: none;
+            border: none;
+            color: #5F6C72;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .btn-close-modal:hover {
+            color: var(--primary-orange);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #E4E7E9;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
     
         @media (max-width: 768px) {
             .detalle-grid {
@@ -793,6 +891,11 @@
                 gap: 16px;
             }
 
+            .resenas-rating-summary {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
             .resena-header {
                 flex-direction: column;
                 gap: 12px;
@@ -801,6 +904,7 @@
             .rating-promedio {
                 flex-direction: row;
                 gap: 12px;
+                align-items: center;
             }
         }
     </style>
@@ -1232,11 +1336,147 @@
                     <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn-form btn-guardar" OnClick="btnGuardar_Click" ValidationGroup="EditarForm" />
                 </div>
             </asp:Panel>
+
+            <!-- MODAL: Nueva Editorial -->
+            <asp:Panel ID="pnlModalEditorial" runat="server" CssClass="modal-panel">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="bi bi-building"></i> Nueva Editorial</h2>
+                        <button type="button" class="btn-close-modal" onclick="hideModalEditorial()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group form-group-full">
+                                <label>Nombre <span class="required">*</span></label>
+                                <asp:TextBox ID="txtEditorialNombre" runat="server" placeholder="Nombre de la editorial"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvEditorialNombre" runat="server" 
+                                    ControlToValidate="txtEditorialNombre" 
+                                    ErrorMessage="El nombre es requerido" 
+                                    CssClass="validator"
+                                    Display="Dynamic" 
+                                    ValidationGroup="EditorialForm" />
+                            </div>
+                            <div class="form-group">
+                                <label>CIF <span class="required">*</span></label>
+                                <asp:TextBox ID="txtEditorialCIF" runat="server" placeholder="CIF"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvEditorialCIF" runat="server" 
+                                    ControlToValidate="txtEditorialCIF" 
+                                    ErrorMessage="El CIF es requerido" 
+                                    CssClass="validator"
+                                    Display="Dynamic" 
+                                    ValidationGroup="EditorialForm" />
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <asp:TextBox ID="txtEditorialTelefono" runat="server" TextMode="Number" placeholder="999999999"></asp:TextBox>
+                            </div>
+                            <div class="form-group form-group-full">
+                                <label>Email</label>
+                                <asp:TextBox ID="txtEditorialEmail" runat="server" TextMode="Email" placeholder="contacto@editorial.com"></asp:TextBox>
+                            </div>
+                            <div class="form-group form-group-full">
+                                <label>Dirección</label>
+                                <asp:TextBox ID="txtEditorialDireccion" runat="server" placeholder="Dirección completa"></asp:TextBox>
+                            </div>
+                            <div class="form-group form-group-full">
+                                <label>Sitio Web</label>
+                                <asp:TextBox ID="txtEditorialWeb" runat="server" placeholder="https://www.editorial.com"></asp:TextBox>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-form btn-cancelar" onclick="hideModalEditorial()">Cancelar</button>
+                        <asp:Button ID="btnGuardarEditorial" runat="server" Text="Guardar Editorial" CssClass="btn-form btn-guardar" OnClick="btnGuardarEditorial_Click" ValidationGroup="EditorialForm" />
+                    </div>
+                </div>
+            </asp:Panel>
+
+            <!-- MODAL: Nuevo Autor -->
+            <asp:Panel ID="pnlModalAutor" runat="server" CssClass="modal-panel">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="bi bi-person-plus"></i> Nuevo Autor</h2>
+                        <button type="button" class="btn-close-modal" onclick="hideModalAutor()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre <span class="required">*</span></label>
+                                <asp:TextBox ID="txtAutorNombre" runat="server" placeholder="Nombre del autor"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvAutorNombre" runat="server" 
+                                    ControlToValidate="txtAutorNombre" 
+                                    ErrorMessage="El nombre es requerido" 
+                                    CssClass="validator"
+                                    Display="Dynamic" 
+                                    ValidationGroup="AutorForm" />
+                            </div>
+                            <div class="form-group">
+                                <label>Apellidos <span class="required">*</span></label>
+                                <asp:TextBox ID="txtAutorApellidos" runat="server" placeholder="Apellidos del autor"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvAutorApellidos" runat="server" 
+                                    ControlToValidate="txtAutorApellidos" 
+                                    ErrorMessage="Los apellidos son requeridos" 
+                                    CssClass="validator"
+                                    Display="Dynamic" 
+                                    ValidationGroup="AutorForm" />
+                            </div>
+                            <div class="form-group form-group-full">
+                                <label>Alias / Seudónimo</label>
+                                <asp:TextBox ID="txtAutorAlias" runat="server" placeholder="Alias o seudónimo (opcional)"></asp:TextBox>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-form btn-cancelar" onclick="hideModalAutor()">Cancelar</button>
+                        <asp:Button ID="btnGuardarAutor" runat="server" Text="Guardar Autor" CssClass="btn-form btn-guardar" OnClick="btnGuardarAutor_Click" ValidationGroup="AutorForm" />
+                    </div>
+                </div>
+            </asp:Panel>
         
         </asp:Panel>
     </div>
+
+    
+
+
+    <script type="text/javascript">
+        function showModalEditorial() {
+            document.getElementById('<%= pnlModalEditorial.ClientID %>').classList.add('show');
+            return false;
+        }
+
+        function hideModalEditorial() {
+            document.getElementById('<%= pnlModalEditorial.ClientID %>').classList.remove('show');
+            return false;
+        }
+
+        function showModalAutor() {
+            document.getElementById('<%= pnlModalAutor.ClientID %>').classList.add('show');
+        return false;
+        }
+
+        function hideModalAutor() {
+            document.getElementById('<%= pnlModalAutor.ClientID %>').classList.remove('show');
+            return false;
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        document.addEventListener('click', function(event) {
+            var modalEditorial = document.getElementById('<%= pnlModalEditorial.ClientID %>');
+            var modalAutor = document.getElementById('<%= pnlModalAutor.ClientID %>');
+
+            if (event.target === modalEditorial) {
+                hideModalEditorial();
+            }
+            if (event.target === modalAutor) {
+                hideModalAutor();
+            }
+        });
+    </script>
+
            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
+
     function mostrarModalExito() {
         // Verifica si Swal está cargado
         if (typeof Swal === 'undefined') {

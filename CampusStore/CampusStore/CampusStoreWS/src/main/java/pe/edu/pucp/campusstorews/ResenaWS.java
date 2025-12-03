@@ -1,26 +1,13 @@
 package pe.edu.pucp.campusstorews;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import pe.edu.pucp.campusstore.modelo.Reseña;
-import pe.edu.pucp.campusstore.modelo.Articulo;
-import pe.edu.pucp.campusstore.modelo.Libro;
 import pe.edu.pucp.campusstore.bo.ReseñaBO;
 import pe.edu.pucp.campusstore.boimpl.ReseñaBOImpl;
-import pe.edu.pucp.campusstore.modelo.Descuento;
 import pe.edu.pucp.campusstore.modelo.enums.Estado;
 import pe.edu.pucp.campusstore.modelo.enums.TipoProducto;
 
@@ -28,50 +15,18 @@ import pe.edu.pucp.campusstore.modelo.enums.TipoProducto;
         serviceName = "ResenaWS",
         targetNamespace = "http://services.campusstore.pucp.edu.pe/")
 public class ResenaWS {
-    private final ResourceBundle config;
-    private final String urlBase;
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final String NOMBRE_RESOURCE = "descuentos";
-    
-    private final ObjectMapper mapper = new ObjectMapper();
-    
     private final ReseñaBO reseñaBO;
     
     public ResenaWS() {
-        this.config = ResourceBundle.getBundle("app");
-        this.urlBase = this.config.getString("app.services.rest.baseurl");
-        
         this.reseñaBO = new ReseñaBOImpl();
     }
     
     @WebMethod(operationName = "listarResenas")
     public List<Reseña> listarResenas(
-        @WebParam(name = "tipoProducto") TipoProducto tipoProducto
+        @WebParam(name = "Reseña") Reseña modelo
     ) throws IOException, InterruptedException {
 
-        StringBuilder sb = new StringBuilder(urlBase)
-                .append("/")
-                .append(NOMBRE_RESOURCE);
-
-        if (tipoProducto != null && !tipoProducto.toString().isBlank()) {
-            sb.append("?tipoProducto=")
-              .append(URLEncoder.encode(tipoProducto.toString(), StandardCharsets.UTF_8));
-        }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(sb.toString()))
-                .GET()
-                .build();
-
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() >= 400) {
-            return Collections.emptyList(); // o lanza excepción si quieres
-        }
-
-        String json = response.body();
-        return mapper.readValue(json, new TypeReference<List<Reseña>>() {});
+        return this.reseñaBO.listar(modelo);
     }
     
     @WebMethod(operationName = "listarResenasPorProducto")
@@ -84,64 +39,16 @@ public class ResenaWS {
     
     @WebMethod(operationName = "obtenerResena")
     public Reseña obtenerResena(
-        @WebParam(name = "idResena") int idResena,
-        @WebParam(name = "tipoProducto") TipoProducto tipoProducto
+        @WebParam(name = "Reseña") Reseña modelo
     ) throws IOException, InterruptedException {
-        Reseña modelo = new Reseña();
-        modelo.setIdReseña(idResena);
-        modelo.setTipoProducto(tipoProducto);
-        StringBuilder sb = new StringBuilder(urlBase)
-                .append("/")
-                .append(NOMBRE_RESOURCE)
-                .append("/")
-                .append(modelo.getIdReseña());
-
-        if (modelo.getTipoProducto() != null && !modelo.getTipoProducto().toString().isBlank()) {
-            sb.append("?tipoProducto=")
-              .append(URLEncoder.encode(modelo.getTipoProducto().toString(), StandardCharsets.UTF_8));
-        }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(sb.toString()))
-                .GET()
-                .build();
-
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        int status = response.statusCode();
-        if (status == 404) return null;
-        if (status >= 400) throw new IOException("Error REST: " + status);
-
-        return mapper.readValue(response.body(), Reseña.class);
+        return this.reseñaBO.obtener(modelo);
     }
     
     @WebMethod(operationName = "eliminarResena")
     public void eliminarResena(
-        @WebParam(name = "idResena") int idResena,
-        @WebParam(name = "tipoProducto") TipoProducto tipoProducto
+        @WebParam(name = "Reseña") Reseña modelo
     ) throws IOException, InterruptedException {
-        Reseña modelo = new Reseña();
-        modelo.setIdReseña(idResena);
-        modelo.setTipoProducto(tipoProducto);
-        
-        StringBuilder sb = new StringBuilder(urlBase)
-                .append("/")
-                .append(NOMBRE_RESOURCE)
-                .append("/")
-                .append(modelo.getIdReseña());
-
-        if (modelo.getTipoProducto() != null && !modelo.getTipoProducto().toString().isBlank()) {
-            sb.append("?tipoProducto=")
-              .append(URLEncoder.encode(modelo.getTipoProducto().toString(), StandardCharsets.UTF_8));
-        }
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(sb.toString()))
-                .DELETE()
-                .build();
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.reseñaBO.eliminar(modelo);
     }
     
     @WebMethod(operationName = "guardarResena")
@@ -149,47 +56,7 @@ public class ResenaWS {
         @WebParam(name = "resena") Reseña modelo, 
         @WebParam(name = "estado") Estado estado
     ) throws IOException, InterruptedException {
-        // Asegurar que el tipoProducto esté establecido basándose en el tipo de producto
-        // Esto es necesario porque puede llegar como null después de la deserialización
-        if (modelo.getTipoProducto() == null && modelo.getIdProducto()!= null) {
-            if (modelo.getTipoProducto() == TipoProducto.ARTICULO) {
-                modelo.setTipoProducto(TipoProducto.ARTICULO);
-            } else if (modelo.getTipoProducto() == TipoProducto.LIBRO) {
-                modelo.setTipoProducto(TipoProducto.LIBRO);
-            }
-        }
-        
-        String url = urlBase + "/" + NOMBRE_RESOURCE;
-        
-        // Asegurarse de que el mapper no escriba fechas como timestamps numéricos
-        mapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        mapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
-        
-        String json = mapper.writeValueAsString(modelo);
-
-        HttpRequest request;
-        if (estado == Estado.Nuevo) {
-            request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        } else {
-            url = this.urlBase + "/" + this.NOMBRE_RESOURCE + "/" + modelo.getIdReseña();
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-        }
-
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() >= 400) {
-            throw new IOException("Error REST: " + response.statusCode());
-        }
+        this.reseñaBO.guardar(modelo, estado);
     }
     
     @WebMethod(operationName = "obtenerPromedioCalificacion")

@@ -111,9 +111,61 @@ namespace CampusStoreWeb
 
         protected void gvEmpleados_PageIndexChanging(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e)
         {
-            empleados = new BindingList<empleado>(empleadoWS.listarEmpleados());
+            // 1. Asignar el nuevo índice de página
             gvEmpleados.PageIndex = e.NewPageIndex;
-            gvEmpleados.DataBind();
+
+            // 2. Verificar si hay texto en el buscador para mantener el filtro
+            string textoBuscar = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(textoBuscar))
+            {
+                // CASO A: Sin búsqueda, cargar todos los empleados
+                CargarEmpleados();
+            }
+            else
+            {
+                // CASO B: Con búsqueda, aplicar nuevamente el filtro
+
+                // Recuperar lista original del ViewState
+                empleados = ViewState["EmpleadosOriginales"] as BindingList<empleado>;
+
+                // Si el ViewState expiró, recargar de BD
+                if (empleados == null)
+                {
+                    empleados = new BindingList<empleado>(empleadoWS.listarEmpleados());
+                    ViewState["EmpleadosOriginales"] = empleados;
+                }
+
+                System.Collections.Generic.List<empleado> empleadosFiltrados;
+
+                // Aplicar lógica de filtrado (ID, Nombre o Usuario) igual que en el botón Buscar
+                if (int.TryParse(textoBuscar, out int idEmpleado))
+                {
+                    // Buscar por ID
+                    empleadosFiltrados = empleados.Where(x => x.idEmpleado == idEmpleado).ToList();
+
+                    // Si no encuentra por ID, intentar buscar por texto (nombre/usuario)
+                    if (empleadosFiltrados.Count == 0)
+                    {
+                        empleadosFiltrados = empleados.Where(x =>
+                            (x.nombre != null && x.nombre.ToLower().Contains(textoBuscar.ToLower())) ||
+                            (x.nombreUsuario != null && x.nombreUsuario.ToLower().Contains(textoBuscar.ToLower()))
+                        ).ToList();
+                    }
+                }
+                else
+                {
+                    // Buscar solo por texto
+                    empleadosFiltrados = empleados.Where(x =>
+                        (x.nombre != null && x.nombre.ToLower().Contains(textoBuscar.ToLower())) ||
+                        (x.nombreUsuario != null && x.nombreUsuario.ToLower().Contains(textoBuscar.ToLower()))
+                    ).ToList();
+                }
+
+                // 3. IMPORTANTE: Asignar los datos filtrados y enlazar la tabla
+                gvEmpleados.DataSource = empleadosFiltrados;
+                gvEmpleados.DataBind();
+            }
         }
 
         protected void lbModificar_Click(object sender, EventArgs e)

@@ -1,6 +1,11 @@
 ﻿using CampusStoreWeb.CampusStoreWS;
+using Newtonsoft.Json;
 using System;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -262,8 +267,9 @@ namespace CampusStoreWeb
                 try
                 {
                     idArticuloActual = (int)ViewState["idArticulo"];
-                    
-                    descuento descuento = new descuento() {
+
+                    descuento descuento = new descuento()
+                    {
                         valorDescuento = double.Parse(txtDescuentoValor.Text),
                         valorDescuentoSpecified = true,
 
@@ -390,12 +396,12 @@ namespace CampusStoreWeb
             if (ViewState["idArticulo"] != null)
             {
                 idArticuloActual = (int)ViewState["idArticulo"];
-                
+
                 try
                 {
                     // Recargar el artículo por si cambió
                     articuloActual = articuloWS.obtenerArticulo(idArticuloActual);
-                    
+
                     if (articuloActual != null)
                     {
                         CargarFormularioEdicion();
@@ -442,21 +448,51 @@ namespace CampusStoreWeb
                 {
                     idArticuloActual = (int)ViewState["idArticulo"];
 
+                    string imagenUrlFinal;
+                    articuloActual = articuloWS.obtenerArticulo(idArticuloActual);
+
+                    if (fuPortadaEdit.HasFile)
+                    {
+                        // Si seleccionó una nueva imagen, subirla
+                        try
+                        {
+                            imagenUrlFinal = SubirImagenAImgBB(fuPortadaEdit.PostedFile);
+                        }
+                        catch (Exception imgEx)
+                        {
+                            string scriptEx = $"alert('Error al subir la imagen: {imgEx.Message}');";
+                            ClientScript.RegisterStartupScript(this.GetType(), "errorImagen", scriptEx, true);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Mantener la imagen actual del libro
+                        imagenUrlFinal = articuloActual.imagenURL;
+                    }
+
                     // Crear objeto con los datos del formulario
                     articulo articuloEditado = new articulo
                     {
                         idArticulo = idArticuloActual,
+                        idArticuloSpecified = true,
                         nombre = txtNombre.Text.Trim(),
                         precio = double.Parse(txtPrecioUnitario.Text),
+                        precioSpecified = true,
                         precioDescuento = double.Parse(txtPrecioConDescuento.Text),
+                        precioDescuentoSpecified = true,
                         stockReal = int.Parse(txtStockReal.Text),
+                        stockRealSpecified = true,
                         stockVirtual = int.Parse(txtStockVirtual.Text),
+                        stockVirtualSpecified = true,
                         tipoArticulo = (tipoArticulo)Enum.Parse(typeof(tipoArticulo), ddlCategoria.SelectedItem.Text),
+                        tipoArticuloSpecified = true,
                         descripcion = txtDescripcion.Text,
+                        imagenURL = imagenUrlFinal
                     };
 
                     // Llamar al WS para actualizar
-                    articuloWS.guardarArticulo(articuloEditado,estado.Modificado);
+                    articuloWS.guardarArticulo(articuloEditado, estado.Modificado);
 
                     // Recargar datos actualizados
                     articuloActual = articuloWS.obtenerArticulo(idArticuloActual);
@@ -476,6 +512,56 @@ namespace CampusStoreWeb
                 }
             }
         }
+
+        private string SubirImagenAImgBB(System.Web.HttpPostedFile archivo)
+        {
+            if (archivo == null || archivo.ContentLength == 0)
+                throw new Exception("No se recibió ninguna imagen.");
+
+            // Validación simple de tipo de archivo
+            if (!archivo.ContentType.StartsWith("image/"))
+                throw new Exception("El archivo seleccionado no es una imagen válida.");
+
+            string apiKey = ConfigurationManager.AppSettings["ImgBBApiKey"];
+            if (string.IsNullOrEmpty(apiKey))
+                throw new Exception("No se ha configurado la API Key de ImgBB.");
+
+            using (var content = new MultipartFormDataContent())
+            {
+                byte[] bytes;
+                using (var br = new BinaryReader(archivo.InputStream))
+                {
+                    bytes = br.ReadBytes(archivo.ContentLength);
+                }
+
+                var fileContent = new ByteArrayContent(bytes);
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(archivo.ContentType);
+
+                content.Add(fileContent, "image", Path.GetFileName(archivo.FileName));
+
+                var url = $"https://api.imgbb.com/1/upload?key={apiKey}";
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.PostAsync(url, content).Result;
+                    response.EnsureSuccessStatusCode();
+
+                    string json = response.Content.ReadAsStringAsync().Result;
+
+                    dynamic result = JsonConvert.DeserializeObject(json);
+                    bool success = result.success;
+
+                    if (!success)
+                    {
+                        throw new Exception("ImgBB no pudo procesar la imagen.");
+                    }
+
+                    string imageUrl = result.data.url;
+                    return imageUrl;
+                }
+            }
+        }
+
         protected void btnCancelarEdit_Click(object sender, EventArgs e)
         {
             // Volver a mostrar los datos sin cambios
@@ -513,14 +599,14 @@ namespace CampusStoreWeb
                 double promedio = articuloActual.reseñas.Average(r => r.calificacion);
                 lblPromedioRating.Text = promedio.ToString("F1");
                 lblTotalResenas.Text = $"({articuloActual.reseñas.Length} {(articuloActual.reseñas.Length == 1 ? "reseña" : "reseñas")})";
-                
+
                 // Generar estrellas de promedio
                 GenerarEstrellasPromedio(promedio);
 
                 // Ordenar por fecha más reciente primero
                 //var resenasOrdenadas = articuloActual.reseñas.OrderByDescending(r => r.fechaPublicacion).ToArray();
                 var resenasOrdenadas = articuloActual.reseñas.ToArray();
-                
+
                 // Vincular al Repeater
                 rptResenas.DataSource = resenasOrdenadas;
                 rptResenas.DataBind();

@@ -5,35 +5,17 @@
       <xsd:import schemaLocation="http://localhost:8080/CampusStoreWS/CuponWS?xsd=1" namespace="http://services.campusstore.pucp.edu.pe/" />
     </xsd:schema>
   </types>
+  <message name="verificarCuponUsado">
+    <part name="parameters" element="tns:verificarCuponUsado" />
+  </message>
+  <message name="verificarCuponUsadoResponse">
+    <part name="parameters" element="tns:verificarCuponUsadoResponse" />
+  </message>
   <message name="buscarCuponPorCodigo">
     <part name="parameters" element="tns:buscarCuponPorCodigo" />
   </message>
   <message name="buscarCuponPorCodigoResponse">
     <part name="parameters" element="tns:buscarCuponPorCodigoResponse" />
-  </message>
-  <message name="guardarCupon">
-    <part name="parameters" element="tns:guardarCupon" />
-  </message>
-  <message name="guardarCuponResponse">
-    <part name="parameters" element="tns:guardarCuponResponse" />
-  </message>
-  <message name="IOException">
-    <part name="fault" element="tns:IOException" />
-  </message>
-  <message name="InterruptedException">
-    <part name="fault" element="tns:InterruptedException" />
-  </message>
-  <message name="obtenerCupon">
-    <part name="parameters" element="tns:obtenerCupon" />
-  </message>
-  <message name="obtenerCuponResponse">
-    <part name="parameters" element="tns:obtenerCuponResponse" />
-  </message>
-  <message name="eliminarCupon">
-    <part name="parameters" element="tns:eliminarCupon" />
-  </message>
-  <message name="eliminarCuponResponse">
-    <part name="parameters" element="tns:eliminarCuponResponse" />
   </message>
   <message name="listarCupones">
     <part name="parameters" element="tns:listarCupones" />
@@ -41,48 +23,68 @@
   <message name="listarCuponesResponse">
     <part name="parameters" element="tns:listarCuponesResponse" />
   </message>
-  <message name="verificarCuponUsado">
-    <part name="parameters" element="tns:verificarCuponUsado" />
+  <message name="InterruptedException">
+    <part name="fault" element="tns:InterruptedException" />
   </message>
-  <message name="verificarCuponUsadoResponse">
-    <part name="parameters" element="tns:verificarCuponUsadoResponse" />
+  <message name="eliminarCupon">
+    <part name="parameters" element="tns:eliminarCupon" />
+  </message>
+  <message name="eliminarCuponResponse">
+    <part name="parameters" element="tns:eliminarCuponResponse" />
+  </message>
+  <message name="guardarCupon">
+    <part name="parameters" element="tns:guardarCupon" />
+  </message>
+  <message name="guardarCuponResponse">
+    <part name="parameters" element="tns:guardarCuponResponse" />
+  </message>
+  <message name="obtenerCupon">
+    <part name="parameters" element="tns:obtenerCupon" />
+  </message>
+  <message name="obtenerCuponResponse">
+    <part name="parameters" element="tns:obtenerCuponResponse" />
   </message>
   <portType name="CuponWS">
+    <operation name="verificarCuponUsado">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/verificarCuponUsadoRequest" message="tns:verificarCuponUsado" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/verificarCuponUsadoResponse" message="tns:verificarCuponUsadoResponse" />
+    </operation>
     <operation name="buscarCuponPorCodigo">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/buscarCuponPorCodigoRequest" message="tns:buscarCuponPorCodigo" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/buscarCuponPorCodigoResponse" message="tns:buscarCuponPorCodigoResponse" />
     </operation>
+    <operation name="listarCupones">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCuponesRequest" message="tns:listarCupones" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCuponesResponse" message="tns:listarCuponesResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCupones/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
+    <operation name="eliminarCupon">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCuponRequest" message="tns:eliminarCupon" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCuponResponse" message="tns:eliminarCuponResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCupon/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
     <operation name="guardarCupon">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/guardarCuponRequest" message="tns:guardarCupon" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/guardarCuponResponse" message="tns:guardarCuponResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/guardarCupon/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/guardarCupon/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="obtenerCupon">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/obtenerCuponRequest" message="tns:obtenerCupon" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/obtenerCuponResponse" message="tns:obtenerCuponResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/obtenerCupon/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/obtenerCupon/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="eliminarCupon">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCuponRequest" message="tns:eliminarCupon" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCuponResponse" message="tns:eliminarCuponResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCupon/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/eliminarCupon/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="listarCupones">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCuponesRequest" message="tns:listarCupones" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCuponesResponse" message="tns:listarCuponesResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCupones/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/listarCupones/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="verificarCuponUsado">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/verificarCuponUsadoRequest" message="tns:verificarCuponUsado" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/CuponWS/verificarCuponUsadoResponse" message="tns:verificarCuponUsadoResponse" />
     </operation>
   </portType>
   <binding name="CuponWSPortBinding" type="tns:CuponWS">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="verificarCuponUsado">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
     <operation name="buscarCuponPorCodigo">
       <soap:operation soapAction="" />
       <input>
@@ -92,6 +94,30 @@
         <soap:body use="literal" />
       </output>
     </operation>
+    <operation name="listarCupones">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
+      </fault>
+    </operation>
+    <operation name="eliminarCupon">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
+      </fault>
+    </operation>
     <operation name="guardarCupon">
       <soap:operation soapAction="" />
       <input>
@@ -100,9 +126,6 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
       <fault name="InterruptedException">
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
@@ -115,51 +138,9 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
       <fault name="InterruptedException">
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
-    </operation>
-    <operation name="eliminarCupon">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="listarCupones">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="verificarCuponUsado">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
     </operation>
   </binding>
   <service name="CuponWS">

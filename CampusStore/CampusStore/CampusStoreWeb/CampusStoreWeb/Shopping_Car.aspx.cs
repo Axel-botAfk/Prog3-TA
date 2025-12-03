@@ -24,6 +24,13 @@ namespace CampusStoreWeb
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool isAdmin = Session["IsAdmin"] != null && (bool)Session["IsAdmin"];
+            if (isAdmin)
+            {
+                Response.Redirect("GestionarEmpleados.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
                 CargarCarrito();

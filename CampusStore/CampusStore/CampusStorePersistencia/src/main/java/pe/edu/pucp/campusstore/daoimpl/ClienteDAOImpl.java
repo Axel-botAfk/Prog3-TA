@@ -9,9 +9,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pe.edu.pucp.campusstore.dao.ClienteDAO;
 import pe.edu.pucp.campusstore.modelo.Cliente;
 import pe.edu.pucp.campusstore.modelo.Cupon;
+import utils.Crypto;
 
 public class ClienteDAOImpl extends BaseDAO<Cliente> implements ClienteDAO {
 
@@ -21,7 +24,11 @@ public class ClienteDAOImpl extends BaseDAO<Cliente> implements ClienteDAO {
         CallableStatement cmd = conn.prepareCall(sql);
         
         cmd.setString("p_nombre", modelo.getNombre());
-        cmd.setString("p_contraseña", modelo.getContraseña());
+        try {
+            cmd.setString("p_contraseña", Crypto.encrypt(modelo.getContraseña()));
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         cmd.setString("p_nombreUsuario", modelo.getNombreUsuario());
         cmd.setString("p_correo", modelo.getCorreo());
         cmd.setString("p_telefono", modelo.getTelefono());
@@ -37,7 +44,11 @@ public class ClienteDAOImpl extends BaseDAO<Cliente> implements ClienteDAO {
         
         cmd.setInt("p_id", modelo.getIdCliente());
         cmd.setString("p_nombre", modelo.getNombre());
-        cmd.setString("p_contraseña", modelo.getContraseña());
+        try {
+            cmd.setString("p_contraseña", Crypto.encrypt(modelo.getContraseña()));
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         cmd.setString("p_nombreUsuario", modelo.getNombreUsuario());
         cmd.setString("p_correo", modelo.getCorreo());
         cmd.setString("p_telefono", modelo.getTelefono());
@@ -77,7 +88,11 @@ public class ClienteDAOImpl extends BaseDAO<Cliente> implements ClienteDAO {
         
         modelo.setIdCliente(rs.getInt("idCliente"));
         modelo.setNombre(rs.getString("nombre"));
-        modelo.setContraseña(rs.getString("contraseña"));
+        try {
+            modelo.setContraseña(Crypto.decrypt(rs.getString("contraseña")));
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         modelo.setNombreUsuario(rs.getString("nombreUsuario"));
         modelo.setCorreo(rs.getString("correo"));
         modelo.setTelefono(rs.getString("telefono"));
@@ -91,7 +106,11 @@ public class ClienteDAOImpl extends BaseDAO<Cliente> implements ClienteDAO {
         
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_correo", correo);
-        cmd.setString("p_contraseña", contraseña);
+        try {
+            cmd.setString("p_contraseña", Crypto.encrypt(contraseña));
+        } catch (Exception ex) {
+            Logger.getLogger(ClienteDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         cmd.registerOutParameter("p_valido", Types.BOOLEAN);
         
         return cmd;

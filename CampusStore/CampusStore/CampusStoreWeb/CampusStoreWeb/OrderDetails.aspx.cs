@@ -279,31 +279,20 @@ namespace CampusStoreWeb
                 // Guardar el estado de la orden para usarlo en la carga de productos
                 ViewState["EstadoOrden"] = orden.estado.ToString();
 
-                // Cargar productos del carrito
+                // Cargar productos del carrito - usar el mismo enfoque que DetalleOrdenCompra
                 System.Diagnostics.Debug.WriteLine($"DEBUG: orden.carrito es null? {orden.carrito == null}");
                 
-                if (orden.carrito != null)
+                if (orden.carrito != null && orden.carrito.lineas != null)
                 {
-                    int idCarrito = orden.carrito.idCarrito;
-                    System.Diagnostics.Debug.WriteLine($"DEBUG: orden.carrito.idCarrito = {idCarrito}");
+                    System.Diagnostics.Debug.WriteLine($"DEBUG: orden.carrito.lineas.Length = {orden.carrito.lineas.Length}");
                     
-                    if (idCarrito > 0)
-                    {
-                        // Obtener el estado de la orden desde ViewState
-                        string estadoOrden = ViewState["EstadoOrden"]?.ToString() ?? "";
-                        LoadProducts(idCarrito, estadoOrden);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("DEBUG: idCarrito <= 0");
-                        rptProducts.DataSource = new List<ProductInfo>();
-                        rptProducts.DataBind();
-                        lblProductCount.Text = "0 Productos";
-                    }
+                    // Obtener el estado de la orden desde ViewState
+                    string estadoOrden = ViewState["EstadoOrden"]?.ToString() ?? "";
+                    LoadProductsFromLineas(orden.carrito.lineas, estadoOrden);
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("DEBUG: orden.carrito es NULL");
+                    System.Diagnostics.Debug.WriteLine("DEBUG: orden.carrito o orden.carrito.lineas es NULL");
                     rptProducts.DataSource = new List<ProductInfo>();
                     rptProducts.DataBind();
                     lblProductCount.Text = "0 Productos";
@@ -340,39 +329,39 @@ namespace CampusStoreWeb
             rptProducts.DataBind();
         }
 
-        private void LoadProducts(int idCarrito, string estadoOrden)
+        private void LoadProductsFromLineas(lineaCarrito[] lineas, string estadoOrden)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"=== LoadProducts INICIADO con idCarrito = {idCarrito} ===");
+                System.Diagnostics.Debug.WriteLine($"=== LoadProductsFromLineas INICIADO con {lineas.Length} líneas ===");
                 var products = new List<ProductInfo>();
 
-                // Obtener artículos del carrito
-                System.Diagnostics.Debug.WriteLine($"DEBUG: Llamando listarArticulosCarrito({idCarrito})...");
-                lineaCarrito[] articulos = ordenCompraWS.listarArticulosCarrito(idCarrito);
-                System.Diagnostics.Debug.WriteLine($"DEBUG: articulos es null? {articulos == null}");
-                
-                if (articulos != null)
+                foreach (var linea in lineas)
                 {
-                    System.Diagnostics.Debug.WriteLine($"DEBUG: articulos.Length = {articulos.Length}");
+                    System.Diagnostics.Debug.WriteLine($"DEBUG: Procesando línea - idLineaCarrito = {linea.idLineaCarrito}");
+                    System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto es null? {linea.producto == null}");
+                    System.Diagnostics.Debug.WriteLine($"DEBUG: linea.tipoProducto = {linea.tipoProducto}");
                     
-                    foreach (var linea in articulos)
+                    if (linea.producto == null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: Procesando línea de artículo - idLineaCarrito = {linea.idLineaCarrito}");
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto es null? {linea.producto == null}");
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto tipo = {linea.producto?.GetType().Name}");
-                        
+                        System.Diagnostics.Debug.WriteLine("DEBUG: linea.producto es null, saltando...");
+                        continue;
+                    }
+
+                    // Determinar el precio final
+                    decimal precioFinal = linea.precioConDescuento > 0 
+                        ? (decimal)linea.precioConDescuento 
+                        : (decimal)linea.precioUnitario;
+
+                    decimal subtotalFinal = precioFinal * linea.cantidad;
+
+                    // Determinar el tipo de producto y procesar según corresponda
+                    if (linea.tipoProducto == tipoProducto.ARTICULO)
+                    {
                         articulo articulo = linea.producto as articulo;
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: Cast a articulo exitoso? {articulo != null}");
                         
                         if (articulo != null)
                         {
-                            decimal precioFinal = linea.precioConDescuento > 0 
-                                ? (decimal)linea.precioConDescuento 
-                                : (decimal)linea.precioUnitario;
-
-                            decimal subtotalFinal = precioFinal * linea.cantidad;
-
                             System.Diagnostics.Debug.WriteLine($"DEBUG: Agregando artículo - Nombre: {articulo.nombre}, Cantidad: {linea.cantidad}");
 
                             products.Add(new ProductInfo
@@ -390,37 +379,15 @@ namespace CampusStoreWeb
                         }
                         else
                         {
-                            System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto no es articulo. Tipo real: {linea.producto?.GetType().FullName}");
+                            System.Diagnostics.Debug.WriteLine($"DEBUG: No se pudo hacer cast a articulo. Tipo real: {linea.producto?.GetType().FullName}");
                         }
                     }
-                }
-
-                // Obtener libros del carrito
-                System.Diagnostics.Debug.WriteLine($"DEBUG: Llamando listarLibrosCarrito({idCarrito})...");
-                lineaCarrito[] libros = ordenCompraWS.listarLibrosCarrito(idCarrito);
-                System.Diagnostics.Debug.WriteLine($"DEBUG: libros es null? {libros == null}");
-                
-                if (libros != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DEBUG: libros.Length = {libros.Length}");
-                    
-                    foreach (var linea in libros)
+                    else if (linea.tipoProducto == tipoProducto.LIBRO)
                     {
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: Procesando línea de libro - idLineaCarrito = {linea.idLineaCarrito}");
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto es null? {linea.producto == null}");
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto tipo = {linea.producto?.GetType().Name}");
-                        
                         libro libro = linea.producto as libro;
-                        System.Diagnostics.Debug.WriteLine($"DEBUG: Cast a libro exitoso? {libro != null}");
                         
                         if (libro != null)
                         {
-                            decimal precioFinal = linea.precioConDescuento > 0 
-                                ? (decimal)linea.precioConDescuento 
-                                : (decimal)linea.precioUnitario;
-
-                            decimal subtotalFinal = precioFinal * linea.cantidad;
-
                             System.Diagnostics.Debug.WriteLine($"DEBUG: Agregando libro - Nombre: {libro.nombre}, Cantidad: {linea.cantidad}");
 
                             products.Add(new ProductInfo
@@ -438,7 +405,7 @@ namespace CampusStoreWeb
                         }
                         else
                         {
-                            System.Diagnostics.Debug.WriteLine($"DEBUG: linea.producto no es libro. Tipo real: {linea.producto?.GetType().FullName}");
+                            System.Diagnostics.Debug.WriteLine($"DEBUG: No se pudo hacer cast a libro. Tipo real: {linea.producto?.GetType().FullName}");
                         }
                     }
                 }
@@ -460,11 +427,11 @@ namespace CampusStoreWeb
 
                 rptProducts.DataSource = products;
                 rptProducts.DataBind();
-                System.Diagnostics.Debug.WriteLine("=== LoadProducts FINALIZADO ===");
+                System.Diagnostics.Debug.WriteLine("=== LoadProductsFromLineas FINALIZADO ===");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"ERROR en LoadProducts: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"ERROR en LoadProductsFromLineas: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                 rptProducts.DataSource = new List<ProductInfo>();

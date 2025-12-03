@@ -10,10 +10,12 @@
   <xs:element name="listarAutoresResponse" type="tns:listarAutoresResponse" />
   <xs:element name="obtenerAutor" type="tns:obtenerAutor" />
   <xs:element name="obtenerAutorResponse" type="tns:obtenerAutorResponse" />
-  <xs:complexType name="guardarAutor">
+  <xs:complexType name="listarAutores">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="listarAutoresResponse">
     <xs:sequence>
-      <xs:element minOccurs="0" name="autor" type="tns:autor" />
-      <xs:element minOccurs="0" name="estado" type="tns:estado" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:autor" />
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="autor">
@@ -23,9 +25,6 @@
       <xs:element minOccurs="0" name="idAutor" type="xs:int" />
       <xs:element minOccurs="0" name="nombre" type="xs:string" />
     </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="guardarAutorResponse">
-    <xs:sequence />
   </xs:complexType>
   <xs:complexType name="IOException">
     <xs:sequence>
@@ -37,13 +36,14 @@
       <xs:element minOccurs="0" name="message" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="listarAutores">
-    <xs:sequence />
-  </xs:complexType>
-  <xs:complexType name="listarAutoresResponse">
+  <xs:complexType name="guardarAutor">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:autor" />
+      <xs:element minOccurs="0" name="autor" type="tns:autor" />
+      <xs:element minOccurs="0" name="estado" type="tns:estado" />
     </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="guardarAutorResponse">
+    <xs:sequence />
   </xs:complexType>
   <xs:complexType name="eliminarAutor">
     <xs:sequence>

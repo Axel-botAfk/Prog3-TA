@@ -13,10 +13,7 @@ import pe.edu.pucp.campusstore.modelo.Libro;
 @WebService(serviceName = "FiltroWS",
             targetNamespace = "http://services.campusstore.pucp.edu.pe/")
 public class FiltroWS {
-
-    /**
-     * This is a sample web service operation
-     */
+    
     private final FiltroBO filtroBO;
     
     public FiltroWS(){

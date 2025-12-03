@@ -21,6 +21,7 @@ namespace CampusStoreWeb
         private descuento descuentoActual;
         private int idLibroActual;
         private List<autor> autoresEditSeleccionados;
+        private editorial editorialTemporal;
 
         public DetalleLibro()
         {
@@ -428,9 +429,6 @@ namespace CampusStoreWeb
             }
         }
 
-        // ========================================
-        // BOTÓN CANCELAR DESCUENTO
-        // ========================================
         protected void btnCancelarDescuento_Click(object sender, EventArgs e)
         {
             MostrarFormularioDescuento(false);
@@ -527,6 +525,117 @@ namespace CampusStoreWeb
 
         }
 
+        protected void btnGuardarEditorial_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                try
+                {
+                    // Crear nueva editorial temporal (igual que en AgregarLibro)
+                    editorialTemporal = new editorial
+                    {
+                        idEditorial = 0, // solo temporal
+                        idEditorialSpecified = false,
+                        nombre = txtEditorialNombre.Text.Trim(),
+                        cif = txtEditorialCIF.Text.Trim(),
+                        telefono = string.IsNullOrWhiteSpace(txtEditorialTelefono.Text) ? 0 : int.Parse(txtEditorialTelefono.Text),
+                        telefonoSpecified = !string.IsNullOrWhiteSpace(txtEditorialTelefono.Text),
+                        email = txtEditorialEmail.Text.Trim(),
+                        direccion = txtEditorialDireccion.Text.Trim(),
+                        sitioWeb = txtEditorialWeb.Text.Trim()
+                    };
+
+                    // Guardar en ViewState para mantenerla entre postbacks
+                    ViewState["EditorialTemporal"] = editorialTemporal;
+
+                    // Agregar al dropdown como opción temporal
+                    ddlEditorialEdit.Items.Insert(1, new ListItem($"[NUEVA] {editorialTemporal.nombre}", "TEMP_EDITORIAL"));
+                    ddlEditorialEdit.SelectedValue = "TEMP_EDITORIAL";
+
+                    // Limpiar campos del modal
+                    LimpiarModalEditorial();
+
+                    // Cerrar modal y mostrar mensaje
+                    string script = @"
+                hideModalEditorial();
+                alert('Editorial preparada. Se creará al guardar el libro.');
+            ";
+                    ClientScript.RegisterStartupScript(this.GetType(), "editorialSuccess", script, true);
+                }
+                catch (Exception ex)
+                {
+                    string script = $"alert('Error al preparar editorial: {ex.Message}');";
+                    ClientScript.RegisterStartupScript(this.GetType(), "error", script, true);
+                }
+            }
+        }
+
+        private void LimpiarModalEditorial()
+        {
+            txtEditorialNombre.Text = string.Empty;
+            txtEditorialCIF.Text = string.Empty;
+            txtEditorialTelefono.Text = string.Empty;
+            txtEditorialEmail.Text = string.Empty;
+            txtEditorialDireccion.Text = string.Empty;
+            txtEditorialWeb.Text = string.Empty;
+        }
+
+        protected void btnGuardarAutor_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                try
+                {
+                    // Crear nuevo autor temporal (igual que en AgregarLibro)
+                    autor nuevoAutorTemporal = new autor
+                    {
+                        idAutor = 0, // temporal, se creará al guardar el libro
+                        idAutorSpecified = false,
+                        nombre = txtAutorNombre.Text.Trim(),
+                        apellidos = txtAutorApellidos.Text.Trim(),
+                        alias = txtAutorAlias.Text.Trim()
+                    };
+
+                    // Recuperar la lista de autores en edición
+                    if (ViewState["AutoresEditSeleccionados"] != null)
+                    {
+                        autoresEditSeleccionados = (List<autor>)ViewState["AutoresEditSeleccionados"];
+                    }
+                    else
+                    {
+                        autoresEditSeleccionados = new List<autor>();
+                    }
+
+                    // Agregar directamente a la lista
+                    autoresEditSeleccionados.Add(nuevoAutorTemporal);
+                    ViewState["AutoresEditSeleccionados"] = autoresEditSeleccionados;
+                    ActualizarAutoresEdit();
+
+                    // Limpiar campos del modal
+                    LimpiarModalAutor();
+
+                    // Cerrar modal y mostrar mensaje
+                    string script = @"
+                hideModalAutor();
+                alert('Autor agregado a la lista. Se creará al guardar el libro.');
+            ";
+                    ClientScript.RegisterStartupScript(this.GetType(), "autorSuccess", script, true);
+                }
+                catch (Exception ex)
+                {
+                    string script = $"alert('Error al agregar autor: {ex.Message}');";
+                    ClientScript.RegisterStartupScript(this.GetType(), "error", script, true);
+                }
+            }
+        }
+
+        private void LimpiarModalAutor()
+        {
+            txtAutorNombre.Text = string.Empty;
+            txtAutorApellidos.Text = string.Empty;
+            txtAutorAlias.Text = string.Empty;
+        }
+
         private void ActualizarAutoresEdit()
         {
             if (autoresEditSeleccionados != null && autoresEditSeleccionados.Count > 0)
@@ -542,8 +651,6 @@ namespace CampusStoreWeb
                 lblNoAutoresEdit.Visible = true;
             }
         }
-
-        // Agregar autor a la lista de edición
         protected void btnAgregarAutorEdit_Click(object sender, EventArgs e)
         {
             if (ddlAutoresEdit.SelectedValue != "0")
@@ -587,7 +694,6 @@ namespace CampusStoreWeb
             }
         }
 
-        // Eliminar autor de la lista
         protected void rptAutoresEdit_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "EliminarAutor")
@@ -609,14 +715,10 @@ namespace CampusStoreWeb
             pnlVista.Visible = !mostrar;
             pnlFormEdicion.Visible = mostrar;
 
-            // Ocultar botones de acción cuando está editando
             btnEditar.Visible = !mostrar;
             btnEliminar.Visible = !mostrar;
         }
 
-        // ========================================
-        // BOTÓN GUARDAR - Guarda los cambios
-        // ========================================
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             if (Page.IsValid && ViewState["idLibro"] != null)
@@ -625,12 +727,55 @@ namespace CampusStoreWeb
                 {
                     idLibroActual = (int)ViewState["idLibro"];
 
-                    int idEditorial = int.Parse(ddlEditorialEdit.SelectedValue);
-                    editorial editorialSeleccionada = new EditorialWSClient().obtenerEditorial(idEditorial);
+                    editorial editorialLibro;
+
+                    if (ddlEditorialEdit.SelectedValue == "TEMP_EDITORIAL")
+                    {
+                        // Usar la editorial temporal
+                        if (ViewState["EditorialTemporal"] != null)
+                        {
+                            editorialLibro = (editorial)ViewState["EditorialTemporal"];
+                        }
+                        else
+                        {
+                            string scriptA = "alert('Error: No se encontró la editorial temporal.');";
+                            ClientScript.RegisterStartupScript(this.GetType(), "error", scriptA, true);
+                            return;
+                        }
+                    }
+                    else if (ddlEditorialEdit.SelectedValue != "0")
+                    {
+                        // Obtener editorial existente
+                        int idEditorial = int.Parse(ddlEditorialEdit.SelectedValue);
+                        editorial editorialExistente = new EditorialWSClient().obtenerEditorial(idEditorial);
+
+                        editorialLibro = new editorial()
+                        {
+                            idEditorial = editorialExistente.idEditorial,
+                            idEditorialSpecified = true,
+                            nombre = editorialExistente.nombre,
+                            cif = editorialExistente.cif,
+                            direccion = editorialExistente.direccion,
+                            email = editorialExistente.email,
+                            telefono = editorialExistente.telefono,
+                            telefonoSpecified = true,
+                            sitioWeb = editorialExistente.sitioWeb
+                        };
+                    }
+                    else
+                    {
+                        string scriptA = "alert('Debe seleccionar o crear una editorial.');";
+                        ClientScript.RegisterStartupScript(this.GetType(), "error", scriptA, true);
+                        return;
+                    }
 
                     if (ViewState["AutoresEditSeleccionados"] != null)
                     {
                         autoresEditSeleccionados = (List<autor>)ViewState["AutoresEditSeleccionados"];
+                    }
+                    else
+                    {
+                        autoresEditSeleccionados = new List<autor>();
                     }
 
                     string imagenUrlFinal;
@@ -638,7 +783,6 @@ namespace CampusStoreWeb
 
                     if (fuPortadaEdit.HasFile)
                     {
-                        // Si seleccionó una nueva imagen, subirla
                         try
                         {
                             imagenUrlFinal = SubirImagenAImgBB(fuPortadaEdit.PostedFile);
@@ -652,62 +796,71 @@ namespace CampusStoreWeb
                     }
                     else
                     {
-                        // Mantener la imagen actual del libro
                         imagenUrlFinal = libroActual.imagenURL;
                     }
 
-                    // Crear objeto con los datos del formulario
                     libro libroEditado = new libro
                     {
                         idLibro = idLibroActual,
                         idLibroSpecified = true,
                         nombre = txtNombre.Text.Trim(),
                         precio = double.Parse(txtPrecioUnitario.Text),
-                        precioSpecified= true,
+                        precioSpecified = true,
                         precioDescuento = double.Parse(txtPrecioConDescuento.Text),
-                        precioDescuentoSpecified= true,
+                        precioDescuentoSpecified = true,
                         stockReal = int.Parse(txtStockReal.Text),
-                        stockRealSpecified= true,
+                        stockRealSpecified = true,
                         stockVirtual = int.Parse(txtStockVirtual.Text),
-                        stockVirtualSpecified=true,
+                        stockVirtualSpecified = true,
                         isbn = txtISBN.Text,
-                        
                         genero = (generoLibro)Enum.Parse(typeof(generoLibro), ddlGenero.SelectedItem.Text),
-                        generoSpecified=true,
-                        fechaPublicacion = DateTime.Parse(lblFechaPublicacion.Text),
-                        fechaPublicacionSpecified=true,
+                        generoSpecified = true,
+                        fechaPublicacion = DateTime.Parse(txtFechaPublicacion.Text),
+                        fechaPublicacionSpecified = true,
                         formato = (formato)Enum.Parse(typeof(formato), ddlFormato.SelectedItem.Text),
-                        formatoSpecified=true,
+                        formatoSpecified = true,
                         sinopsis = txtSinopsis.Text,
                         descripcion = txtDescripcion.Text,
-                        editorial = new editorial
-                        {
-                            idEditorial = editorialSeleccionada.idEditorial,
-                            idEditorialSpecified = true,
-                            nombre = editorialSeleccionada.nombre,
-                            cif = editorialSeleccionada.cif,
-                            direccion = editorialSeleccionada.direccion,
-                            telefono = editorialSeleccionada.telefono,
-                            telefonoSpecified = true,
-                            email = editorialSeleccionada.email,
-                            sitioWeb = editorialSeleccionada.sitioWeb
-                        },
-
+                        editorial = editorialLibro,
                         autores = autoresEditSeleccionados?.ToArray(),
-
                         imagenURL = imagenUrlFinal
                     };
-                    // Llamar al WS para actualizar
-                    libroWS.guardarLibro(libroEditado, estado.Modificado);
 
-                    // Recargar datos actualizados
+                    if (ddlEditorialEdit.SelectedValue == "TEMP_EDITORIAL")
+                    {
+                        libroEditado.editorial.idEditorial = 0;
+                        libroEditado.editorial.idEditorialSpecified = true;
+                    }
+                    else
+                    {
+                        libroEditado.editorial.idEditorialSpecified = true;
+                    }
+
+                    foreach (var a in libroEditado.autores)
+                    {
+                        a.idAutorSpecified = true;
+                    }
+
+                    bool hayTemporales = autoresEditSeleccionados.Any(a => a.idAutor == 0) ||
+                                         ddlEditorialEdit.SelectedValue == "TEMP_EDITORIAL";
+
+                    if (hayTemporales)
+                    {
+                        libroWS.modificarLibroConAutores(libroEditado, autoresEditSeleccionados.ToArray());
+                    }
+                    else
+                    {
+                        libroWS.guardarLibro(libroEditado, estado.Modificado);
+                    }
+
                     libroActual = libroWS.obtenerLibro(idLibroActual);
 
-                    // Volver a la vista de detalle
+                    ViewState.Remove("EditorialTemporal");
+                    ViewState.Remove("AutoresEditSeleccionados");
+
                     MostrarDatosLibro();
                     MostrarFormularioEdicion(false);
 
-                    // Mostrar mensaje de éxito
                     string script = "mostrarModalExito();";
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertaExito", script, true);
                 }

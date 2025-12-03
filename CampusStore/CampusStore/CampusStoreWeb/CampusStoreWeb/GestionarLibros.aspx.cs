@@ -115,8 +115,61 @@ namespace CampusStoreWeb
 
         protected void gvLibros_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            // 1. Asignar el nuevo índice de página
             gvLibros.PageIndex = e.NewPageIndex;
-            gvLibros.DataBind();
+
+            // 2. Verificar si hay texto en el buscador para mantener el filtro
+            string textoBuscar = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(textoBuscar))
+            {
+                // CASO A: Sin búsqueda, cargar todos los libros
+                CargarLibros();
+            }
+            else
+            {
+                // CASO B: Con búsqueda, aplicar nuevamente el filtro
+
+                // Recuperar la lista original del ViewState
+                libros = ViewState["LibrosOriginales"] as BindingList<libro>;
+
+                // Si el ViewState expiró, recargar de la BD
+                if (libros == null)
+                {
+                    libros = new BindingList<libro>(libroWS.listarLibros());
+                    ViewState["LibrosOriginales"] = libros;
+                }
+
+                System.Collections.Generic.List<libro> librosFiltrados;
+
+                // Aplicar la misma lógica de filtro que en el botón Buscar
+                if (int.TryParse(textoBuscar, out int idLibro))
+                {
+                    // Buscar por ID
+                    librosFiltrados = libros.Where(x => x.idLibro == idLibro).ToList();
+
+                    // Si no encuentra por ID, buscar por nombre
+                    if (librosFiltrados.Count == 0)
+                    {
+                        librosFiltrados = libros.Where(x =>
+                            x.nombre != null &&
+                            x.nombre.ToLower().Contains(textoBuscar.ToLower())
+                        ).ToList();
+                    }
+                }
+                else
+                {
+                    // Buscar solo por nombre
+                    librosFiltrados = libros.Where(x =>
+                        x.nombre != null &&
+                        x.nombre.ToLower().Contains(textoBuscar.ToLower())
+                    ).ToList();
+                }
+
+                // 3. IMPORTANTE: Asignar los datos filtrados y enlazar la tabla
+                gvLibros.DataSource = librosFiltrados;
+                gvLibros.DataBind();
+            }
         }
 
         protected void lbModificar_Click(object sender, EventArgs e)

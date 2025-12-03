@@ -5,17 +5,11 @@
       <xsd:import schemaLocation="http://localhost:8080/CampusStoreWS/RolWS?xsd=1" namespace="http://services.campusstore.pucp.edu.pe/" />
     </xsd:schema>
   </types>
-  <message name="guardarNuevoRolRetornaId">
-    <part name="parameters" element="tns:guardarNuevoRolRetornaId" />
+  <message name="obtenerRol">
+    <part name="parameters" element="tns:obtenerRol" />
   </message>
-  <message name="guardarNuevoRolRetornaIdResponse">
-    <part name="parameters" element="tns:guardarNuevoRolRetornaIdResponse" />
-  </message>
-  <message name="eliminarRol">
-    <part name="parameters" element="tns:eliminarRol" />
-  </message>
-  <message name="eliminarRolResponse">
-    <part name="parameters" element="tns:eliminarRolResponse" />
+  <message name="obtenerRolResponse">
+    <part name="parameters" element="tns:obtenerRolResponse" />
   </message>
   <message name="IOException">
     <part name="fault" element="tns:IOException" />
@@ -23,41 +17,31 @@
   <message name="InterruptedException">
     <part name="fault" element="tns:InterruptedException" />
   </message>
-  <message name="listarRoles">
-    <part name="parameters" element="tns:listarRoles" />
-  </message>
-  <message name="listarRolesResponse">
-    <part name="parameters" element="tns:listarRolesResponse" />
-  </message>
-  <message name="obtenerRol">
-    <part name="parameters" element="tns:obtenerRol" />
-  </message>
-  <message name="obtenerRolResponse">
-    <part name="parameters" element="tns:obtenerRolResponse" />
-  </message>
   <message name="guardarRol">
     <part name="parameters" element="tns:guardarRol" />
   </message>
   <message name="guardarRolResponse">
     <part name="parameters" element="tns:guardarRolResponse" />
   </message>
+  <message name="guardarNuevoRolRetornaId">
+    <part name="parameters" element="tns:guardarNuevoRolRetornaId" />
+  </message>
+  <message name="guardarNuevoRolRetornaIdResponse">
+    <part name="parameters" element="tns:guardarNuevoRolRetornaIdResponse" />
+  </message>
+  <message name="listarRoles">
+    <part name="parameters" element="tns:listarRoles" />
+  </message>
+  <message name="listarRolesResponse">
+    <part name="parameters" element="tns:listarRolesResponse" />
+  </message>
+  <message name="eliminarRol">
+    <part name="parameters" element="tns:eliminarRol" />
+  </message>
+  <message name="eliminarRolResponse">
+    <part name="parameters" element="tns:eliminarRolResponse" />
+  </message>
   <portType name="RolWS">
-    <operation name="guardarNuevoRolRetornaId">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarNuevoRolRetornaIdRequest" message="tns:guardarNuevoRolRetornaId" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarNuevoRolRetornaIdResponse" message="tns:guardarNuevoRolRetornaIdResponse" />
-    </operation>
-    <operation name="eliminarRol">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRolRequest" message="tns:eliminarRol" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRolResponse" message="tns:eliminarRolResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRol/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRol/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="listarRoles">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRolesRequest" message="tns:listarRoles" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRolesResponse" message="tns:listarRolesResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRoles/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRoles/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
     <operation name="obtenerRol">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/obtenerRolRequest" message="tns:obtenerRol" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/obtenerRolResponse" message="tns:obtenerRolResponse" />
@@ -70,48 +54,25 @@
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarRol/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarRol/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
+    <operation name="guardarNuevoRolRetornaId">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarNuevoRolRetornaIdRequest" message="tns:guardarNuevoRolRetornaId" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/guardarNuevoRolRetornaIdResponse" message="tns:guardarNuevoRolRetornaIdResponse" />
+    </operation>
+    <operation name="listarRoles">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRolesRequest" message="tns:listarRoles" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRolesResponse" message="tns:listarRolesResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRoles/Fault/IOException" name="IOException" message="tns:IOException" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/listarRoles/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
+    <operation name="eliminarRol">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRolRequest" message="tns:eliminarRol" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRolResponse" message="tns:eliminarRolResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRol/Fault/IOException" name="IOException" message="tns:IOException" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/RolWS/eliminarRol/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
   </portType>
   <binding name="RolWSPortBinding" type="tns:RolWS">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <operation name="guardarNuevoRolRetornaId">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-    </operation>
-    <operation name="eliminarRol">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="listarRoles">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
     <operation name="obtenerRol">
       <soap:operation soapAction="" />
       <input>
@@ -128,6 +89,45 @@
       </fault>
     </operation>
     <operation name="guardarRol">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="IOException">
+        <soap:fault use="literal" name="IOException" namespace="" />
+      </fault>
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
+      </fault>
+    </operation>
+    <operation name="guardarNuevoRolRetornaId">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="listarRoles">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="IOException">
+        <soap:fault use="literal" name="IOException" namespace="" />
+      </fault>
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
+      </fault>
+    </operation>
+    <operation name="eliminarRol">
       <soap:operation soapAction="" />
       <input>
         <soap:body use="literal" />

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pe.edu.pucp.campusstore.daoimpl;
 
 import java.sql.CallableStatement;
@@ -10,18 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
-import pe.edu.pucp.campusstore.bases.dao.TransaccionalBaseDAO;
 import pe.edu.pucp.campusstore.bases.dao.TransaccionalBaseModeloDAO;
 import pe.edu.pucp.campusstore.dao.AutorLibroDAO;
 import pe.edu.pucp.campusstore.modelo.Autor;
 import pe.edu.pucp.campusstore.modelo.AutoresLibro;
 import pe.edu.pucp.campusstore.modelo.Libro;
 
-/**
- *
- * @author mibb8
- */
 public class AutorLibroDAOImpl extends TransaccionalBaseModeloDAO<AutoresLibro> implements AutorLibroDAO {
 
     @Override

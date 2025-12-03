@@ -17,11 +17,11 @@
   <message name="InterruptedException">
     <part name="fault" element="tns:InterruptedException" />
   </message>
-  <message name="guardarAutor">
-    <part name="parameters" element="tns:guardarAutor" />
+  <message name="obtenerAutor">
+    <part name="parameters" element="tns:obtenerAutor" />
   </message>
-  <message name="guardarAutorResponse">
-    <part name="parameters" element="tns:guardarAutorResponse" />
+  <message name="obtenerAutorResponse">
+    <part name="parameters" element="tns:obtenerAutorResponse" />
   </message>
   <message name="listarAutores">
     <part name="parameters" element="tns:listarAutores" />
@@ -29,11 +29,11 @@
   <message name="listarAutoresResponse">
     <part name="parameters" element="tns:listarAutoresResponse" />
   </message>
-  <message name="obtenerAutor">
-    <part name="parameters" element="tns:obtenerAutor" />
+  <message name="guardarAutor">
+    <part name="parameters" element="tns:guardarAutor" />
   </message>
-  <message name="obtenerAutorResponse">
-    <part name="parameters" element="tns:obtenerAutorResponse" />
+  <message name="guardarAutorResponse">
+    <part name="parameters" element="tns:guardarAutorResponse" />
   </message>
   <portType name="AutorWS">
     <operation name="eliminarAutor">
@@ -42,11 +42,11 @@
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/eliminarAutor/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/eliminarAutor/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
-    <operation name="guardarAutor">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutorRequest" message="tns:guardarAutor" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutorResponse" message="tns:guardarAutorResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutor/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutor/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    <operation name="obtenerAutor">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutorRequest" message="tns:obtenerAutor" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutorResponse" message="tns:obtenerAutorResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutor/Fault/IOException" name="IOException" message="tns:IOException" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutor/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="listarAutores">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/listarAutoresRequest" message="tns:listarAutores" />
@@ -54,11 +54,11 @@
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/listarAutores/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/listarAutores/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
-    <operation name="obtenerAutor">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutorRequest" message="tns:obtenerAutor" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutorResponse" message="tns:obtenerAutorResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutor/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/obtenerAutor/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    <operation name="guardarAutor">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutorRequest" message="tns:guardarAutor" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutorResponse" message="tns:guardarAutorResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutor/Fault/IOException" name="IOException" message="tns:IOException" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/AutorWS/guardarAutor/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
   </portType>
   <binding name="AutorWSPortBinding" type="tns:AutorWS">
@@ -78,7 +78,7 @@
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
     </operation>
-    <operation name="guardarAutor">
+    <operation name="obtenerAutor">
       <soap:operation soapAction="" />
       <input>
         <soap:body use="literal" />
@@ -108,7 +108,7 @@
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
     </operation>
-    <operation name="obtenerAutor">
+    <operation name="guardarAutor">
       <soap:operation soapAction="" />
       <input>
         <soap:body use="literal" />

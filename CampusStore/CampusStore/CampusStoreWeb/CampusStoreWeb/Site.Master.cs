@@ -33,6 +33,18 @@ namespace CampusStoreWeb
                     // Menú para Admin
 
                     // Ocultar opciones de cliente
+                    if (pnlBusqueda != null)
+                    {
+                        pnlBusqueda.Visible = false;
+                    }
+                    txtBusqueda.Enabled = false;
+                    btnBuscar.Visible = false;
+
+                    if (lnkLogo != null)
+                    {
+                        lnkLogo.HRef = "GestionarEmpleados.aspx";
+                    }
+
                     lnkShopProduct.Visible = false;
                     lnkShoppingCart.Visible = false;
                     lnkFooterCuadernos.Visible = false;
@@ -96,6 +108,13 @@ namespace CampusStoreWeb
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
+            bool isAdmin = Session["IsAdmin"] != null && (bool)Session["IsAdmin"];
+            if (isAdmin)
+            {
+                Response.Redirect("~/GestionarEmpleados.aspx");
+                return;
+            }
+
             string busqueda = txtBusqueda.Text;
             if (busqueda.Length == 0)
             {

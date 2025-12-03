@@ -147,6 +147,14 @@
       <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:articulo" />
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="eliminarArticulo">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="eliminarArticuloResponse">
+    <xs:sequence />
+  </xs:complexType>
   <xs:complexType name="guardarArticulo">
     <xs:sequence>
       <xs:element minOccurs="0" name="articulo" type="tns:articulo" />
@@ -154,14 +162,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="guardarArticuloResponse">
-    <xs:sequence />
-  </xs:complexType>
-  <xs:complexType name="eliminarArticulo">
-    <xs:sequence>
-      <xs:element name="id" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="eliminarArticuloResponse">
     <xs:sequence />
   </xs:complexType>
   <xs:simpleType name="tipoArticulo">

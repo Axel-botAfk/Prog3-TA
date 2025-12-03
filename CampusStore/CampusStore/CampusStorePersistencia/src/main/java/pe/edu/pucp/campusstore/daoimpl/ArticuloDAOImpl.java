@@ -12,8 +12,6 @@ import java.util.List;
 import pe.edu.pucp.campusstore.dao.ArticuloDAO;
 import pe.edu.pucp.campusstore.modelo.Articulo;
 import pe.edu.pucp.campusstore.modelo.Cliente;
-import pe.edu.pucp.campusstore.modelo.Descuento;
-import pe.edu.pucp.campusstore.modelo.Producto;
 import pe.edu.pucp.campusstore.modelo.Reseña;
 import pe.edu.pucp.campusstore.modelo.enums.TipoArticulo;
 import pe.edu.pucp.campusstore.modelo.enums.TipoProducto;

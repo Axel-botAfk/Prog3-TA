@@ -160,16 +160,10 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     
-    <!-- Breadcrumb -->
+    <!-- Título de sección -->
     <div class="custom-breadcrumb">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="Default.aspx"><i class="bi bi-house-door"></i> Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="#">Cuenta de Usuario</a>
-                </li>
                 <li class="breadcrumb-item active" aria-current="page">Registrarse</li>
             </ol>
         </nav>

@@ -90,11 +90,11 @@
                     break;
                 }
             }
-            
+
             // Si NO es libro, verificar que no haya filtros de libro seleccionados
             if (categoriaSeleccionada !== 'libro') {
                 var hayFiltrosLibro = false;
-                
+
                 // Verificar Editoriales
                 var checkboxesEditoriales = document.querySelectorAll('input[type="checkbox"][name*="cblEditoriales"]');
                 for (var i = 0; i < checkboxesEditoriales.length; i++) {
@@ -103,7 +103,7 @@
                         break;
                     }
                 }
-                
+
                 // Verificar Autores
                 if (!hayFiltrosLibro) {
                     var checkboxesAutores = document.querySelectorAll('input[type="checkbox"][name*="cblAutores"]');
@@ -114,7 +114,7 @@
                         }
                     }
                 }
-                
+
                 // Verificar Géneros
                 if (!hayFiltrosLibro) {
                     var checkboxesGeneros = document.querySelectorAll('input[type="checkbox"][name*="cblGeneros"]');
@@ -125,7 +125,7 @@
                         }
                     }
                 }
-                
+
                 if (hayFiltrosLibro) {
                     Swal.fire({
                         icon: 'warning',
@@ -137,7 +137,7 @@
                     return false; // Prevenir postback
                 }
             }
-            
+
             return true; // Permitir el postback
         }
     </script>
@@ -332,36 +332,36 @@
 
     <!-- JAVASCRIPT para la lógica del Modal -->
     <script type="text/javascript">
-         var quickViewModal; // Hacemos la variable del modal global
+        var quickViewModal; // Hacemos la variable del modal global
 
-         // 1. Envolvemos la inicialización en DOMContentLoaded
-         document.addEventListener('DOMContentLoaded', function () {
-             var modalElement = document.getElementById('quickViewModal');
-             if (modalElement) {
-                 quickViewModal = new bootstrap.Modal(modalElement, {});
-             }
-         });
+        // 1. Envolvemos la inicialización en DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalElement = document.getElementById('quickViewModal');
+            if (modalElement) {
+                quickViewModal = new bootstrap.Modal(modalElement, {});
+            }
+        });
 
-         // 2. Definimos las funciones en el scope GLOBAL (fuera de DOMContentLoaded)
-         function openQuickView(id, tipo) {
-             if (!quickViewModal) {
-                 console.error('Bootstrap Modal no está inicializado.');
-                 return;
-             }
-             document.getElementById('modalContent').innerHTML = '';
-             document.getElementById('modalLoading').style.display = 'flex';
-             quickViewModal.show();
-             PageMethods.GetProductDetails(tipo, id, onGetDetailsSuccess, onGetDetailsError);
-         }
+        // 2. Definimos las funciones en el scope GLOBAL (fuera de DOMContentLoaded)
+        function openQuickView(id, tipo) {
+            if (!quickViewModal) {
+                console.error('Bootstrap Modal no está inicializado.');
+                return;
+            }
+            document.getElementById('modalContent').innerHTML = '';
+            document.getElementById('modalLoading').style.display = 'flex';
+            quickViewModal.show();
+            PageMethods.GetProductDetails(tipo, id, onGetDetailsSuccess, onGetDetailsError);
+        }
 
-         function onGetDetailsSuccess(result) {
-             document.getElementById('modalLoading').style.display = 'none';
-             if (result) {
-                 let autorHtml = result.Autor ? `<p class="text-muted mb-2">Autor: ${result.Autor}</p>` : '';
-                 let disponibilidadClass = result.Stock > 0 ? "in-stock" : "out-stock";
-                 let disponibilidadTexto = result.Stock > 0 ? "En Stock" : "Agotado";
+        function onGetDetailsSuccess(result) {
+            document.getElementById('modalLoading').style.display = 'none';
+            if (result) {
+                let autorHtml = result.Autor ? `<p class="text-muted mb-2">Autor: ${result.Autor}</p>` : '';
+                let disponibilidadClass = result.Stock > 0 ? "in-stock" : "out-stock";
+                let disponibilidadTexto = result.Stock > 0 ? "En Stock" : "Agotado";
 
-                 let contentHtml = `
+                let contentHtml = `
                     <div class="row">
                         <div class="col-md-6">
                             <img id="mainModalImage" src="${result.UrlImagen}" class="img-fluid rounded" />
@@ -376,40 +376,40 @@
                         </div>
                     </div>`;
 
-                 document.getElementById('modalContent').innerHTML = contentHtml;
-             } else {
-                 document.getElementById('modalContent').innerHTML = '<p class="text-center text-danger">No se pudieron cargar los detalles del producto.</p>';
-             }
-         }
+                document.getElementById('modalContent').innerHTML = contentHtml;
+            } else {
+                document.getElementById('modalContent').innerHTML = '<p class="text-center text-danger">No se pudieron cargar los detalles del producto.</p>';
+            }
+        }
 
-         function onGetDetailsError(error) {
-             document.getElementById('modalLoading').style.display = 'none';
-             document.getElementById('modalContent').innerHTML = `<p class="text-center text-danger">Error: ${error.get_message()}</p>`;
-         }
+        function onGetDetailsError(error) {
+            document.getElementById('modalLoading').style.display = 'none';
+            document.getElementById('modalContent').innerHTML = `<p class="text-center text-danger">Error: ${error.get_message()}</p>`;
+        }
 
-         function addFromModal(productoId, tipoProducto) {
-             var cantidad = parseInt(document.getElementById('modalQty').value) || 1;
-             
-             // Crear un formulario oculto para hacer el postback
-             var form = document.createElement('form');
-             form.method = 'POST';
-             form.action = window.location.href;
-             
-             var targetInput = document.createElement('input');
-             targetInput.type = 'hidden';
-             targetInput.name = '__EVENTTARGET';
-             targetInput.value = 'AddToCartFromModal';
-             form.appendChild(targetInput);
-             
-             var argInput = document.createElement('input');
-             argInput.type = 'hidden';
-             argInput.name = '__EVENTARGUMENT';
-             argInput.value = productoId + ',' + tipoProducto + ',' + cantidad;
-             form.appendChild(argInput);
-             
-             document.body.appendChild(form);
-             form.submit();
-         }
+        function addFromModal(productoId, tipoProducto) {
+            var cantidad = parseInt(document.getElementById('modalQty').value) || 1;
+
+            // Crear un formulario oculto para hacer el postback
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = window.location.href;
+
+            var targetInput = document.createElement('input');
+            targetInput.type = 'hidden';
+            targetInput.name = '__EVENTTARGET';
+            targetInput.value = 'AddToCartFromModal';
+            form.appendChild(targetInput);
+
+            var argInput = document.createElement('input');
+            argInput.type = 'hidden';
+            argInput.name = '__EVENTARGUMENT';
+            argInput.value = productoId + ',' + tipoProducto + ',' + cantidad;
+            form.appendChild(argInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
 
     </script>
 </asp:Content>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://services.campusstore.pucp.edu.pe/" targetNamespace="http://services.campusstore.pucp.edu.pe/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="Articulo" type="tns:articulo" />
-  <xs:element name="IOException" type="tns:IOException" />
-  <xs:element name="InterruptedException" type="tns:InterruptedException" />
   <xs:element name="Libro" type="tns:libro" />
   <xs:element name="eliminarLibro" type="tns:eliminarLibro" />
   <xs:element name="eliminarLibroResponse" type="tns:eliminarLibroResponse" />
@@ -12,6 +10,8 @@
   <xs:element name="leerAutoresPorLibroResponse" type="tns:leerAutoresPorLibroResponse" />
   <xs:element name="listarLibros" type="tns:listarLibros" />
   <xs:element name="listarLibrosResponse" type="tns:listarLibrosResponse" />
+  <xs:element name="modificarLibroConAutores" type="tns:modificarLibroConAutores" />
+  <xs:element name="modificarLibroConAutoresResponse" type="tns:modificarLibroConAutoresResponse" />
   <xs:element name="obtenerLibro" type="tns:obtenerLibro" />
   <xs:element name="obtenerLibroResponse" type="tns:obtenerLibroResponse" />
   <xs:element name="registrarLibro" type="tns:registrarLibro" />
@@ -132,16 +132,6 @@
   <xs:complexType name="guardarLibroResponse">
     <xs:sequence />
   </xs:complexType>
-  <xs:complexType name="IOException">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="message" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="InterruptedException">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="message" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
   <xs:complexType name="eliminarLibro">
     <xs:sequence>
       <xs:element name="id" type="xs:int" />
@@ -188,6 +178,15 @@
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:autor" />
     </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="modificarLibroConAutores">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="libro" type="tns:libro" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="autores" type="tns:autor" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="modificarLibroConAutoresResponse">
+    <xs:sequence />
   </xs:complexType>
   <xs:simpleType name="generoLibro">
     <xs:restriction base="xs:string">

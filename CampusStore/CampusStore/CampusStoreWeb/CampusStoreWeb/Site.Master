@@ -130,18 +130,18 @@
             <div class="container">
                 <div class="row align-items:center">
                     <div class="col-auto">
-                        <a href="Catalogo.aspx" class="logo" runat="server">
+                        <a id="lnkLogo" href="Catalogo.aspx" class="logo" runat="server">
                             <div class="logo-icon"><div class="logo-icon-inner"></div></div>
                             CAMPUS STORE
                         </a>
                     </div>
 
-                    <div class="search-bar d-flex align-items-stretch">
+                    <asp:Panel ID="pnlBusqueda" runat="server" CssClass="search-bar d-flex align-items-stretch">
                         <asp:TextBox ID="txtBusqueda" runat="server" CssClass="form-control" placeholder="Busca productos, autores y más..."></asp:TextBox>
                         <asp:LinkButton ID="btnBuscar" runat="server" CssClass="btn btn-search" OnClick="btnBuscar_Click">
                             <i class="bi bi-search"></i>
                         </asp:LinkButton>
-                    </div>
+                    </asp:Panel>
                     
                     <div class="col-auto">
                         <div class="header-icons">

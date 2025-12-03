@@ -109,10 +109,59 @@ namespace CampusStoreWeb
 
         protected void gvCupones_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            cupones = new BindingList<cupon>(cuponWS.listarCupones());
+            // 1. Asignar el nuevo índice de página
             gvCupones.PageIndex = e.NewPageIndex;
-            gvCupones.DataSource = cupones;
-            gvCupones.DataBind();
+
+            // 2. Verificar si hay una búsqueda activa
+            string textoBuscar = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(textoBuscar))
+            {
+                // CASO A: Sin búsqueda, cargar todos los cupones
+                CargarCupones();
+            }
+            else
+            {
+                // CASO B: Con búsqueda, hay que volver a filtrar los datos
+
+                // Recuperar la lista original del ViewState
+                cupones = ViewState["CuponesOriginales"] as BindingList<cupon>;
+
+                // Seguridad: si el ViewState expiró, recargar de la BD
+                if (cupones == null)
+                {
+                    cupones = new BindingList<cupon>(cuponWS.listarCupones());
+                    ViewState["CuponesOriginales"] = cupones;
+                }
+
+                System.Collections.Generic.List<cupon> cuponesFiltrados;
+
+                // Aplicar la misma lógica de filtrado que en btnBuscar_Click
+                if (int.TryParse(textoBuscar, out int idCupon))
+                {
+                    // Buscar por ID
+                    cuponesFiltrados = cupones.Where(x => x.idCupon == idCupon).ToList();
+
+                    // Si no encuentra por ID, intentar por Código
+                    if (cuponesFiltrados.Count == 0)
+                    {
+                        cuponesFiltrados = cupones.Where(x =>
+                            x.codigo != null && x.codigo.ToLower().Contains(textoBuscar.ToLower())
+                        ).ToList();
+                    }
+                }
+                else
+                {
+                    // Buscar solo por Código
+                    cuponesFiltrados = cupones.Where(x =>
+                        x.codigo != null && x.codigo.ToLower().Contains(textoBuscar.ToLower())
+                    ).ToList();
+                }
+
+                // 3. Asignar los datos filtrados y enlazar la tabla
+                gvCupones.DataSource = cuponesFiltrados;
+                gvCupones.DataBind();
+            }
         }
 
         protected void gvCupones_RowDataBound(object sender, GridViewRowEventArgs e)

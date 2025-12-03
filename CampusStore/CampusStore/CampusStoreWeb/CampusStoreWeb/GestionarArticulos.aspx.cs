@@ -115,8 +115,61 @@ namespace CampusStoreWeb
 
         protected void gvArticulos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            // 1. Establecer el nuevo índice de página
             gvArticulos.PageIndex = e.NewPageIndex;
-            gvArticulos.DataBind();
+
+            // 2. Verificar si el usuario tiene algo escrito en el buscador
+            string textoBuscar = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(textoBuscar))
+            {
+                // CASO A: No hay búsqueda, cargar todo normal
+                CargarArticulos();
+            }
+            else
+            {
+                // CASO B: Hay búsqueda, debemos filtrar de nuevo los datos para la nueva página
+
+                // Recuperar la lista completa del ViewState
+                articulos = ViewState["ArticulosOriginales"] as BindingList<articulo>;
+
+                // Prevención de errores: si el ViewState expiró, recargar de BD
+                if (articulos == null)
+                {
+                    articulos = new BindingList<articulo>(articuloWS.listarArticulos());
+                    ViewState["ArticulosOriginales"] = articulos;
+                }
+
+                System.Collections.Generic.List<articulo> articulosFiltrados;
+
+                // Aplicar la misma lógica de filtro que en el botón Buscar
+                if (int.TryParse(textoBuscar, out int idArticulo))
+                {
+                    // Buscar por ID
+                    articulosFiltrados = articulos.Where(x => x.idArticulo == idArticulo).ToList();
+
+                    // Si no encuentra por ID, intentar por nombre
+                    if (articulosFiltrados.Count == 0)
+                    {
+                        articulosFiltrados = articulos.Where(x =>
+                            x.nombre != null &&
+                            x.nombre.ToLower().Contains(textoBuscar.ToLower())
+                        ).ToList();
+                    }
+                }
+                else
+                {
+                    // Buscar solo por nombre
+                    articulosFiltrados = articulos.Where(x =>
+                        x.nombre != null &&
+                        x.nombre.ToLower().Contains(textoBuscar.ToLower())
+                    ).ToList();
+                }
+
+                // 3. Enlazar los datos filtrados a la tabla
+                gvArticulos.DataSource = articulosFiltrados;
+                gvArticulos.DataBind();
+            }
         }
 
         protected void lbModificar_Click(object sender, EventArgs e)

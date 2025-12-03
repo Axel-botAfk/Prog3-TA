@@ -377,22 +377,10 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     
-    <!-- Breadcrumb -->
+    <!-- Título de sección -->
     <div class="breadcrumb-custom">
         <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <asp:HyperLink runat="server" NavigateUrl="~/">
-                            <i class="bi bi-house-door"></i> Home
-                        </asp:HyperLink>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <asp:HyperLink runat="server" NavigateUrl="~/UserAccount.aspx">Cuenta de Administrador</asp:HyperLink>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Gestionar Cupones</li>
-                </ol>
-            </nav>
+            <h2 class="mb-0">Gestionar Cupones</h2>
         </div>
     </div>
     

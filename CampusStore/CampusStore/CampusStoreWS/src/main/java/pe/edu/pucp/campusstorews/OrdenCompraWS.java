@@ -26,67 +26,29 @@ import pe.edu.pucp.campusstore.modelo.enums.Estado;
         targetNamespace = "http://services.campusstore.pucp.edu.pe/")
 @XmlSeeAlso({Articulo.class, Libro.class})
 public class OrdenCompraWS {
-    private final ResourceBundle config;
-    private final String urlBase;
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final String NOMBRE_RESOURCE = "ordenesCompra";
-
     private final OrdenCompraBO ordenCompraBO;
     
     public OrdenCompraWS() {
-        this.config = ResourceBundle.getBundle("app");
-        this.urlBase = this.config.getString("app.services.rest.baseurl");
-        
         this.ordenCompraBO = new OrdenCompraBOImpl();
     }
     
     @WebMethod(operationName = "listarOrdenesCompra")
     public List<OrdenCompra> listarOrdenesCompra()throws IOException, InterruptedException{
-        String url = this.urlBase + "/" + this.NOMBRE_RESOURCE;
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-        
-        HttpResponse<String> response = 
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-        String json = response.body();
-        ObjectMapper mapper= new ObjectMapper();
-        List<OrdenCompra> modelo = 
-                mapper.readValue(json, new TypeReference<List<OrdenCompra>>() {});
-        
-        return modelo;
+        return this.ordenCompraBO.listar();
     }
     
     @WebMethod(operationName = "obtenerOrdenCompra")
     public OrdenCompra obtenerOrdenCompra(
         @WebParam(name = "id") int id
     ) throws IOException, InterruptedException {
-        String url = this.urlBase + "/" + this.NOMBRE_RESOURCE+ "/" + id;
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-        
-        HttpResponse<String> response = 
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-        String json = response.body();
-        ObjectMapper mapper= new ObjectMapper();
-        OrdenCompra modelo = mapper.readValue(json, OrdenCompra.class);
-        
-        return modelo;
+        return this.ordenCompraBO.obtener(id);
     }
     
     @WebMethod(operationName = "eliminarOrdenCompra")
     public void eliminarOrdenCompra(
         @WebParam(name = "id") int id
     ) throws IOException, InterruptedException {
-        String url = this.urlBase + "/" + this.NOMBRE_RESOURCE + "/" + id;
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .DELETE()
-                .build();
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.ordenCompraBO.eliminar(id);
     }
     
     @WebMethod(operationName = "guardarOrdenCompra")
@@ -95,35 +57,7 @@ public class OrdenCompraWS {
         @WebParam(name = "estado") Estado estado
     ) throws IOException, InterruptedException {
         
-        ObjectMapper mapper = new ObjectMapper();
-        
-        // Asegurarse de que el mapper no escriba fechas como timestamps numéricos
-        mapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        mapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
-        
-        String json = mapper.writeValueAsString(modelo);
-
-        String url;
-        HttpRequest request;
-
-        if (estado == Estado.Nuevo) {
-            url = this.urlBase + "/" + this.NOMBRE_RESOURCE;
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-        } else {
-            url = this.urlBase + "/" + this.NOMBRE_RESOURCE + "/" + modelo.getIdOrdenCompra();
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-        }
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.ordenCompraBO.guardar(modelo, estado);
     }
     
     @WebMethod(operationName = "listarOrdenesPorCliente")

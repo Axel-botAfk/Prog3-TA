@@ -17,9 +17,6 @@
   <message name="eliminarDescuentoResponse">
     <part name="parameters" element="tns:eliminarDescuentoResponse" />
   </message>
-  <message name="IOException">
-    <part name="fault" element="tns:IOException" />
-  </message>
   <message name="InterruptedException">
     <part name="fault" element="tns:InterruptedException" />
   </message>
@@ -29,17 +26,17 @@
   <message name="guardarDescuentoResponse">
     <part name="parameters" element="tns:guardarDescuentoResponse" />
   </message>
-  <message name="obtenerDescuento">
-    <part name="parameters" element="tns:obtenerDescuento" />
-  </message>
-  <message name="obtenerDescuentoResponse">
-    <part name="parameters" element="tns:obtenerDescuentoResponse" />
-  </message>
   <message name="listarDescuentos">
     <part name="parameters" element="tns:listarDescuentos" />
   </message>
   <message name="listarDescuentosResponse">
     <part name="parameters" element="tns:listarDescuentosResponse" />
+  </message>
+  <message name="obtenerDescuento">
+    <part name="parameters" element="tns:obtenerDescuento" />
+  </message>
+  <message name="obtenerDescuentoResponse">
+    <part name="parameters" element="tns:obtenerDescuentoResponse" />
   </message>
   <portType name="DescuentoWS">
     <operation name="obtenerDescuentoPorProducto">
@@ -49,26 +46,22 @@
     <operation name="eliminarDescuento">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/eliminarDescuentoRequest" message="tns:eliminarDescuento" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/eliminarDescuentoResponse" message="tns:eliminarDescuentoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/eliminarDescuento/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/eliminarDescuento/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="guardarDescuento">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/guardarDescuentoRequest" message="tns:guardarDescuento" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/guardarDescuentoResponse" message="tns:guardarDescuentoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/guardarDescuento/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/guardarDescuento/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
-    </operation>
-    <operation name="obtenerDescuento">
-      <input wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuentoRequest" message="tns:obtenerDescuento" />
-      <output wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuentoResponse" message="tns:obtenerDescuentoResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuento/Fault/IOException" name="IOException" message="tns:IOException" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuento/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
     <operation name="listarDescuentos">
       <input wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/listarDescuentosRequest" message="tns:listarDescuentos" />
       <output wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/listarDescuentosResponse" message="tns:listarDescuentosResponse" />
-      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/listarDescuentos/Fault/IOException" name="IOException" message="tns:IOException" />
       <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/listarDescuentos/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
+    </operation>
+    <operation name="obtenerDescuento">
+      <input wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuentoRequest" message="tns:obtenerDescuento" />
+      <output wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuentoResponse" message="tns:obtenerDescuentoResponse" />
+      <fault wsam:Action="http://services.campusstore.pucp.edu.pe/DescuentoWS/obtenerDescuento/Fault/InterruptedException" name="InterruptedException" message="tns:InterruptedException" />
     </operation>
   </portType>
   <binding name="DescuentoWSPortBinding" type="tns:DescuentoWS">
@@ -90,9 +83,6 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
       <fault name="InterruptedException">
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
@@ -105,24 +95,6 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
-      <fault name="InterruptedException">
-        <soap:fault use="literal" name="InterruptedException" namespace="" />
-      </fault>
-    </operation>
-    <operation name="obtenerDescuento">
-      <soap:operation soapAction="" />
-      <input>
-        <soap:body use="literal" />
-      </input>
-      <output>
-        <soap:body use="literal" />
-      </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
-      </fault>
       <fault name="InterruptedException">
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
@@ -135,9 +107,18 @@
       <output>
         <soap:body use="literal" />
       </output>
-      <fault name="IOException">
-        <soap:fault use="literal" name="IOException" namespace="" />
+      <fault name="InterruptedException">
+        <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>
+    </operation>
+    <operation name="obtenerDescuento">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
       <fault name="InterruptedException">
         <soap:fault use="literal" name="InterruptedException" namespace="" />
       </fault>

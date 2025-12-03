@@ -7,8 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pe.edu.pucp.campusstore.dao.EmpleadoDAO;
 import pe.edu.pucp.campusstore.modelo.Empleado;
+import utils.Crypto;
 
 public class EmpleadoDAOImpl extends BaseDAO<Empleado> implements EmpleadoDAO {
       @Override
@@ -18,7 +21,11 @@ public class EmpleadoDAOImpl extends BaseDAO<Empleado> implements EmpleadoDAO {
         String sql = "{call insertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_nombre", modelo.getNombre());
-        cmd.setString("p_contraseña", modelo.getContraseña());
+          try {
+              cmd.setString("p_contraseña", Crypto.encrypt(modelo.getContraseña()));
+          } catch (Exception ex) {
+              Logger.getLogger(EmpleadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+          }
         cmd.setString("p_nombreUsuario", modelo.getNombreUsuario());
         cmd.setString("p_correo", modelo.getCorreo());
         cmd.setString("p_telefono", modelo.getTelefono());
@@ -39,7 +46,11 @@ public class EmpleadoDAOImpl extends BaseDAO<Empleado> implements EmpleadoDAO {
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_id", modelo.getIdEmpleado());
         cmd.setString("p_nombre", modelo.getNombre());
-        cmd.setString("p_contraseña", modelo.getContraseña());
+        try {
+              cmd.setString("p_contraseña", Crypto.encrypt(modelo.getContraseña()));
+          } catch (Exception ex) {
+              Logger.getLogger(EmpleadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+          }
         cmd.setString("p_nombreUsuario", modelo.getNombreUsuario());
         cmd.setString("p_correo", modelo.getCorreo());
         cmd.setString("p_telefono", modelo.getTelefono());
@@ -88,7 +99,11 @@ public class EmpleadoDAOImpl extends BaseDAO<Empleado> implements EmpleadoDAO {
         Empleado modelo = new Empleado();
         modelo.setIdEmpleado(rs.getInt("idEmpleado"));
         modelo.setNombre(rs.getString("nombre"));
-        modelo.setContraseña(rs.getString("contraseña"));
+          try {
+              modelo.setContraseña(Crypto.decrypt(rs.getString("contraseña")));
+          } catch (Exception ex) {
+              Logger.getLogger(EmpleadoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+          }
         modelo.setNombreUsuario(rs.getString("nombreUsuario"));
         modelo.setCorreo(rs.getString("correo"));
         modelo.setTelefono(rs.getString("telefono"));

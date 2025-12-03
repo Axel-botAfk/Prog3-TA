@@ -181,22 +181,10 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     
-    <!-- Breadcrumb -->
+    <!-- Título de sección -->
     <div class="breadcrumb-custom">
         <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <asp:HyperLink runat="server" NavigateUrl="~/">
-                            <i class="bi bi-house-door"></i> Home
-                        </asp:HyperLink>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <asp:HyperLink runat="server" NavigateUrl="~/UserAccount.aspx">Cuenta de Administrador</asp:HyperLink>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Generar Reportes</li>
-                </ol>
-            </nav>
+            <h2 class="mb-0">Generar Reportes</h2>
         </div>
     </div>
     
@@ -225,9 +213,9 @@
                         <i class="bi bi-ticket-perforated"></i>
                         <span>Gestionar Cupones</span>
                     </asp:HyperLink>
-                    <asp:HyperLink runat="server" NavigateUrl="~/GestionarPedidos.aspx" CssClass="menu-item">
+                    <asp:HyperLink runat="server" NavigateUrl="~/GestionarOrdenesCompra.aspx" CssClass="menu-item">
                         <i class="bi bi-file-earmark-text"></i>
-                        <span>Gestionar Pedidos</span>
+                        <span>Gestionar Ordenes de Compra</span>
                     </asp:HyperLink>
                     <asp:HyperLink runat="server" NavigateUrl="~/GenerarReportes.aspx" CssClass="menu-item active">
                         <i class="bi bi-gear"></i>

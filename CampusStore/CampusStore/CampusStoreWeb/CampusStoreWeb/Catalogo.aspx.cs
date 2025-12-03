@@ -42,6 +42,13 @@ namespace CampusStoreWeb
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool isAdmin = Session["IsAdmin"] != null && (bool)Session["IsAdmin"];
+            if (isAdmin)
+            {
+                Response.Redirect("GestionarEmpleados.aspx");
+                return;
+            }
+
             if (Session["ShowAddToCartAlert"] != null && (bool)Session["ShowAddToCartAlert"])
             {
                 string script = "Swal.fire({ icon: 'success', title: '¡Añadido!', text: 'Producto agregado al carrito.', showConfirmButton: false, timer: 1500 });";
